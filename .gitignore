@@ -1,9 +1,26 @@
+# Dependencies
 node_modules/
 frontend/node_modules/
+
+# Python
 backend/venv/
+backend/.venv/
 backend/__pycache__/
 *.pyc
+
+# Environment files
 .env
 frontend/.env
 backend/.env
+
+# Build output
 dist/
+frontend/dist/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
