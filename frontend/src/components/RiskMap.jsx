@@ -1,9 +1,3 @@
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
-
-import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import { useEffect, useMemo, useState } from "react";
 import {
   MapContainer,
@@ -14,17 +8,6 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
-const defaultIcon = L.icon({
-  iconRetinaUrl: markerIcon2x,
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-});
-
-L.Marker.prototype.options.icon = defaultIcon;
 const NER_CENTER = [25.5, 93.5];
 
 const NER_STATES = [
@@ -99,7 +82,9 @@ function FitZones({ zones }) {
 function RiskLegend() {
   return (
     <div className="absolute bottom-5 left-5 z-[1000] rounded-xl border border-slate-200 bg-white/95 p-4 shadow-lg backdrop-blur">
-      <p className="mb-3 text-sm font-bold text-slate-800">Risk level</p>
+      <p className="mb-3 text-sm font-bold text-slate-800">
+        Risk level
+      </p>
 
       <div className="space-y-2 text-xs text-slate-700">
         <div className="flex items-center gap-2">
@@ -154,7 +139,10 @@ function ZonePopup({ zone }) {
 
       <div className="mb-3 rounded-lg bg-slate-50 p-3">
         <div className="flex items-center justify-between">
-          <span className="text-xs text-slate-500">Risk score</span>
+          <span className="text-xs text-slate-500">
+            Risk score
+          </span>
+
           <strong style={{ color: riskColor }}>
             {formatNumber(risk, 0)}%
           </strong>
@@ -174,13 +162,19 @@ function ZonePopup({ zone }) {
       <div className="grid grid-cols-2 gap-2 text-xs">
         <div className="rounded-lg bg-blue-50 p-2">
           <p className="text-blue-600">Rainfall</p>
+
           <p className="font-bold text-blue-900">
-            {formatNumber(zone.rainfall_mm ?? zone.rainfall, 1)} mm
+            {formatNumber(
+              zone.rainfall_mm ?? zone.rainfall,
+              1
+            )}{" "}
+            mm
           </p>
         </div>
 
         <div className="rounded-lg bg-cyan-50 p-2">
           <p className="text-cyan-600">Soil moisture</p>
+
           <p className="font-bold text-cyan-900">
             {formatNumber(zone.soil_moisture, 1)}%
           </p>
@@ -188,6 +182,7 @@ function ZonePopup({ zone }) {
 
         <div className="rounded-lg bg-orange-50 p-2">
           <p className="text-orange-600">Slope</p>
+
           <p className="font-bold text-orange-900">
             {formatNumber(zone.slope, 1)}°
           </p>
@@ -195,6 +190,7 @@ function ZonePopup({ zone }) {
 
         <div className="rounded-lg bg-purple-50 p-2">
           <p className="text-purple-600">Ground movement</p>
+
           <p className="font-bold text-purple-900">
             {formatNumber(zone.ground_movement, 1)} mm
           </p>
@@ -213,7 +209,8 @@ function ZonePopup({ zone }) {
 
         <p>
           <strong>Reason:</strong>{" "}
-          {zone.reason || "Environmental conditions are being monitored."}
+          {zone.reason ||
+            "Environmental conditions are being monitored."}
         </p>
       </div>
     </div>
@@ -226,14 +223,17 @@ export default function RiskMap({
   onZoneSelect,
   onStateChange,
 }) {
-  const [selectedState, setSelectedState] = useState("All States");
+  const [selectedState, setSelectedState] =
+    useState("All States");
 
   const filteredZones = useMemo(() => {
     if (selectedState === "All States") {
       return zones;
     }
 
-    return zones.filter((zone) => zone.state === selectedState);
+    return zones.filter(
+      (zone) => zone.state === selectedState
+    );
   }, [zones, selectedState]);
 
   function handleStateChange(event) {
@@ -242,7 +242,9 @@ export default function RiskMap({
     setSelectedState(nextState);
 
     if (onStateChange) {
-      onStateChange(nextState === "All States" ? null : nextState);
+      onStateChange(
+        nextState === "All States" ? null : nextState
+      );
     }
   }
 
@@ -338,14 +340,20 @@ export default function RiskMap({
         <FitZones zones={validZones} />
 
         {validZones.map((zone) => {
-          const [latitude, longitude] = getZonePosition(zone);
+          const [latitude, longitude] =
+            getZonePosition(zone);
+
           const risk = Number(zone.risk ?? 0);
-          const isSelected = selectedZone?.id === zone.id;
+          const isSelected =
+            selectedZone?.id === zone.id;
+
           const color = getRiskColor(risk);
 
           return (
             <CircleMarker
-              key={zone.id ?? `${latitude}-${longitude}`}
+              key={
+                zone.id ?? `${latitude}-${longitude}`
+              }
               center={[latitude, longitude]}
               radius={isSelected ? 14 : 9}
               pathOptions={{
