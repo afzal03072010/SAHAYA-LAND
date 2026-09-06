@@ -1,3 +1,9 @@
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+
+import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import { useEffect, useMemo, useState } from "react";
 import {
   MapContainer,
@@ -8,6 +14,17 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
+const defaultIcon = L.icon({
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+});
+
+L.Marker.prototype.options.icon = defaultIcon;
 const NER_CENTER = [25.5, 93.5];
 
 const NER_STATES = [
