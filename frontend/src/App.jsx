@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   MapContainer,
   TileLayer,
-  Marker,
+  CircleMarker,
   Popup,
   useMap,
 } from "react-leaflet";
@@ -3278,13 +3278,30 @@ function App() {
                             ];
 
                           return (
-                            <Marker
+                            <CircleMarker
                               key={
                                 state.id
                               }
-                              position={
+                              center={
                                 state.coordinates
                               }
+                              radius={10}
+                              pathOptions={{
+                                color:
+                                  stateLiveData?.riskLevel === "high"
+                                    ? "#ef4444"
+                                    : stateLiveData?.riskLevel === "moderate"
+                                    ? "#f59e0b"
+                                    : "#22c55e",
+                                fillColor:
+                                  stateLiveData?.riskLevel === "high"
+                                    ? "#ef4444"
+                                    : stateLiveData?.riskLevel === "moderate"
+                                    ? "#f59e0b"
+                                    : "#22c55e",
+                                fillOpacity: 0.8,
+                                weight: 2,
+                              }}
                               eventHandlers={{
                                 click: () =>
                                   handleStateSelect(
@@ -3354,7 +3371,7 @@ function App() {
 
                               </Popup>
 
-                            </Marker>
+                            </CircleMarker>
                           );
                         }
                       )}
