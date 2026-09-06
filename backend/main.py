@@ -31,6 +31,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",
         "http://127.0.0.1:5173",
+        "https://sahaya-land.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -49,8 +50,7 @@ NER_BOUNDS = {
     "max_lon": 97.5,
 }
 
-# 1 degree gives a smaller prototype grid.
-# Change to 0.5 later for a denser grid.
+# Smaller prototype grid
 GRID_STEP = 1.0
 
 WEATHER_BATCH_SIZE = 50
@@ -240,9 +240,7 @@ def generate_reason(
 
 def rainfall_to_score(rainfall_mm):
     """
-    Prototype normalization.
-
-    This converts rainfall in millimetres
+    Converts rainfall in millimetres
     into a 0-100 rainfall risk score.
     """
 
@@ -330,9 +328,7 @@ def estimate_ground_movement(latitude, longitude):
 # DATA QUALITY
 # ============================================================
 
-def generate_data_quality(
-    live_weather_available,
-):
+def generate_data_quality(live_weather_available):
     """
     Shows which data sources are currently available.
 
@@ -471,6 +467,15 @@ def generate_nearby_assets(
 def load_ner_boundary():
     gdf = gpd.read_file(BOUNDARY_FILE)
 
+    required_columns = {"admin", "name", "geometry"}
+
+    missing_columns = required_columns - set(gdf.columns)
+
+    if missing_columns:
+        raise ValueError(
+            f"Missing columns in states.geojson: {missing_columns}"
+        )
+
     india = gdf[
         gdf["admin"].eq("India")
     ].copy()
@@ -527,23 +532,13 @@ def generate_monitoring_grid():
                             matching_states.iloc[0]["name"]
                         )
                     else:
-                        state_name = (
-                            "North Eastern Region"
-                        )
+                        state_name = "North Eastern Region"
 
                     cells.append(
                         {
-                            "id": (
-                                f"Cell-{cell_number:04d}"
-                            ),
-                            "latitude": round(
-                                latitude,
-                                4,
-                            ),
-                            "longitude": round(
-                                longitude,
-                                4,
-                            ),
+                            "id": f"Cell-{cell_number:04d}",
+                            "latitude": round(latitude, 4),
+                            "longitude": round(longitude, 4),
                             "state": state_name,
                         }
                     )
@@ -554,18 +549,9 @@ def generate_monitoring_grid():
 
             latitude += GRID_STEP
 
-        print(
-            "NER boundary loaded successfully"
-        )
-
-        print(
-            f"NER states selected: {len(ner)}"
-        )
-
-        print(
-            f"Monitoring cells inside NER: "
-            f"{len(cells)}"
-        )
+        print("NER boundary loaded successfully")
+        print(f"NER states selected: {len(ner)}")
+        print(f"Monitoring cells inside NER: {len(cells)}")
 
         return cells
 
@@ -629,22 +615,14 @@ def fetch_weather_batch(batch):
                 continue
 
             weather = weather_results[index]
-
-            current = weather.get(
-                "current",
-                {},
-            )
+            current = weather.get("current", {})
 
             rain = float(
                 current.get("rain", 0) or 0
             )
 
             precipitation = float(
-                current.get(
-                    "precipitation",
-                    0,
-                )
-                or 0
+                current.get("precipitation", 0) or 0
             )
 
             if rain <= 0 and precipitation > 0:
@@ -652,12 +630,8 @@ def fetch_weather_batch(batch):
 
             results[cell["id"]] = {
                 "rainfall_mm": rain,
-                "temperature": current.get(
-                    "temperature_2m"
-                ),
-                "humidity": current.get(
-                    "relative_humidity_2m"
-                ),
+                "temperature": current.get("temperature_2m"),
+                "humidity": current.get("relative_humidity_2m"),
                 "time": current.get("time"),
                 "source": "Open-Meteo",
             }
@@ -665,23 +639,15 @@ def fetch_weather_batch(batch):
         return results
 
     except requests.exceptions.Timeout:
-        print(
-            "Open-Meteo request timed out."
-        )
+        print("Open-Meteo request timed out.")
         return {}
 
     except requests.exceptions.RequestException as error:
-        print(
-            "Open-Meteo request error:",
-            error,
-        )
+        print("Open-Meteo request error:", error)
         return {}
 
     except Exception as error:
-        print(
-            "Weather processing error:",
-            error,
-        )
+        print("Weather processing error:", error)
         return {}
 
 
@@ -694,19 +660,14 @@ def get_weather_for_grid(cells):
 
     if (
         weather_cache["data"]
-        and current_time
-        - weather_cache["timestamp"]
+        and current_time - weather_cache["timestamp"]
         < WEATHER_CACHE_SECONDS
     ):
-        print(
-            "Using cached weather data."
-        )
-
+        print("Using cached weather data.")
         return weather_cache["data"]
 
     print(
-        f"Fetching weather for "
-        f"{len(cells)} monitoring cells..."
+        f"Fetching weather for {len(cells)} monitoring cells..."
     )
 
     weather_data = {}
@@ -721,15 +682,11 @@ def get_weather_for_grid(cells):
         ]
 
         print(
-            f"Weather batch "
-            f"{start + 1}-"
+            f"Weather batch {start + 1}-"
             f"{start + len(batch)}"
         )
 
-        batch_data = fetch_weather_batch(
-            batch
-        )
-
+        batch_data = fetch_weather_batch(batch)
         weather_data.update(batch_data)
 
     if weather_data:
@@ -749,10 +706,7 @@ def home():
         "system": "SAHAYA-LAND",
         "status": "online",
         "version": "5.0",
-        "message": (
-            "Landslide Intelligence API "
-            "is running"
-        ),
+        "message": "Landslide Intelligence API is running",
     }
 
 
@@ -775,9 +729,7 @@ def status():
         "soil_moisture": "Prototype",
         "slope": "Prototype",
         "ground_movement": "Prototype",
-        "risk_model": (
-            "Weighted prototype model"
-        ),
+        "risk_model": "Weighted prototype model",
     }
 
 
@@ -810,7 +762,6 @@ def grid_info():
 @app.get("/api/risk-zones")
 def get_risk_zones():
     grid = generate_monitoring_grid()
-
     weather_data = get_weather_for_grid(grid)
 
     results = []
@@ -828,30 +779,16 @@ def get_risk_zones():
             "North Eastern Region",
         )
 
-        # ----------------------------------------------------
-        # Weather
-        # ----------------------------------------------------
-
         weather = weather_data.get(cell_id)
 
         if weather:
             live_weather_count += 1
 
-            rainfall_mm = weather[
-                "rainfall_mm"
-            ]
+            rainfall_mm = weather["rainfall_mm"]
+            rainfall = rainfall_to_score(rainfall_mm)
 
-            rainfall = rainfall_to_score(
-                rainfall_mm
-            )
-
-            temperature = weather[
-                "temperature"
-            ]
-
-            humidity = weather[
-                "humidity"
-            ]
+            temperature = weather["temperature"]
+            humidity = weather["humidity"]
 
             weather_time = weather["time"]
             weather_source = weather["source"]
@@ -866,10 +803,6 @@ def get_risk_zones():
             weather_time = None
             weather_source = "Unavailable"
 
-        # ----------------------------------------------------
-        # Terrain
-        # ----------------------------------------------------
-
         soil_moisture = estimate_soil_moisture(
             latitude,
             longitude,
@@ -880,16 +813,10 @@ def get_risk_zones():
             longitude,
         )
 
-        ground_movement = (
-            estimate_ground_movement(
-                latitude,
-                longitude,
-            )
+        ground_movement = estimate_ground_movement(
+            latitude,
+            longitude,
         )
-
-        # ----------------------------------------------------
-        # Risk
-        # ----------------------------------------------------
 
         risk, level = calculate_risk(
             rainfall=rainfall,
@@ -905,37 +832,25 @@ def get_risk_zones():
             ground_movement=ground_movement,
         )
 
-        # ----------------------------------------------------
-        # Advanced intelligence
-        # ----------------------------------------------------
-
         risk_change = calculate_risk_change(
             rainfall=rainfall,
             soil_moisture=soil_moisture,
             ground_movement=ground_movement,
         )
 
-        trend = get_risk_trend(
-            risk_change
-        )
+        trend = get_risk_trend(risk_change)
 
-        emergency_priority = (
-            calculate_emergency_priority(
-                risk=risk,
-                rainfall=rainfall,
-                ground_movement=ground_movement,
-            )
+        emergency_priority = calculate_emergency_priority(
+            risk=risk,
+            rainfall=rainfall,
+            ground_movement=ground_movement,
         )
 
         data_quality = generate_data_quality(
-            live_weather_available=bool(
-                weather
-            ),
+            live_weather_available=bool(weather)
         )
 
-        confidence = calculate_confidence(
-            data_quality
-        )
+        confidence = calculate_confidence(data_quality)
 
         nearby_assets = generate_nearby_assets(
             latitude=latitude,
@@ -958,77 +873,37 @@ def get_risk_zones():
 
         place_name = places[place_index]
 
-        # ----------------------------------------------------
-        # Output
-        # ----------------------------------------------------
-
         results.append(
             {
                 "id": cell_id,
-
                 "latitude": latitude,
                 "longitude": longitude,
-
                 "state": state_name,
                 "place": place_name,
-
                 "risk": risk,
                 "level": level,
                 "reason": reason,
-
                 "rainfall": rainfall,
                 "rainfall_mm": rainfall_mm,
-
                 "soil_moisture": soil_moisture,
                 "slope": slope,
                 "ground_movement": ground_movement,
-
                 "temperature": temperature,
                 "humidity": humidity,
-
                 "weather_time": weather_time,
                 "weather_source": weather_source,
-
                 "confidence": confidence,
                 "trend": trend,
                 "risk_change": risk_change,
-                "emergency_priority": (
-                    emergency_priority
-                ),
-
-                "nearby_villages": (
-                    nearby_assets[
-                        "nearby_villages"
-                    ]
-                ),
-
-                "nearby_schools": (
-                    nearby_assets[
-                        "nearby_schools"
-                    ]
-                ),
-
-                "nearby_hospitals": (
-                    nearby_assets[
-                        "nearby_hospitals"
-                    ]
-                ),
-
-                "nearby_roads": (
-                    nearby_assets[
-                        "nearby_roads"
-                    ]
-                ),
-
+                "emergency_priority": emergency_priority,
+                "nearby_villages": nearby_assets["nearby_villages"],
+                "nearby_schools": nearby_assets["nearby_schools"],
+                "nearby_hospitals": nearby_assets["nearby_hospitals"],
+                "nearby_roads": nearby_assets["nearby_roads"],
                 "data_quality": data_quality,
-
                 "last_updated": weather_time,
             }
         )
-
-    # ========================================================
-    # SUMMARY
-    # ========================================================
 
     critical = 0
     high = 0
@@ -1038,50 +913,29 @@ def get_risk_zones():
     for zone in results:
         if zone["level"] == "Critical":
             critical += 1
-
         elif zone["level"] == "High":
             high += 1
-
         elif zone["level"] == "Moderate":
             moderate += 1
-
         else:
             low += 1
 
-    # ========================================================
-    # RESPONSE
-    # ========================================================
-
     return {
         "success": True,
-
         "region": "North Eastern Region",
-
         "states": NER_STATES,
-
         "count": len(results),
-
         "total_cells": len(results),
-
         "live_weather": live_weather_count > 0,
-
-        "live_weather_cells": (
-            live_weather_count
-        ),
-
-        "failed_weather_cells": (
-            failed_weather_count
-        ),
-
+        "live_weather_cells": live_weather_count,
+        "failed_weather_cells": failed_weather_count,
         "weather_cache": "15 minutes",
-
         "risk_summary": {
             "critical": critical,
             "high": high,
             "moderate": moderate,
             "low": low,
         },
-
         "zones": results,
     }
 
@@ -1130,10 +984,7 @@ def get_state_summary():
             continue
 
         average_risk = round(
-            sum(
-                zone["risk"]
-                for zone in state_zones
-            )
+            sum(zone["risk"] for zone in state_zones)
             / len(state_zones)
         )
 
@@ -1152,9 +1003,7 @@ def get_state_summary():
         summaries.append(
             {
                 "state": state_name,
-                "total_zones": len(
-                    state_zones
-                ),
+                "total_zones": len(state_zones),
                 "average_risk": average_risk,
                 "critical_zones": critical_count,
                 "high_zones": high_count,
@@ -1174,16 +1023,12 @@ def get_state_summary():
 @app.get("/api/alerts")
 def get_alerts():
     response = get_risk_zones()
-
     zones = response["zones"]
 
     alerts = []
 
     for zone in zones:
-        if zone["level"] in [
-            "Critical",
-            "High",
-        ]:
+        if zone["level"] in ["Critical", "High"]:
             alerts.append(
                 {
                     "id": zone["id"],
@@ -1192,11 +1037,7 @@ def get_alerts():
                     "level": zone["level"],
                     "risk": zone["risk"],
                     "reason": zone["reason"],
-                    "priority": (
-                        zone[
-                            "emergency_priority"
-                        ]
-                    ),
+                    "priority": zone["emergency_priority"],
                     "trend": zone["trend"],
                 }
             )
@@ -1220,7 +1061,6 @@ def get_alerts():
 @app.get("/api/simulator/{zone_id}")
 def simulate_zone(zone_id: str):
     response = get_risk_zones()
-
     zones = response["zones"]
 
     for zone in zones:
@@ -1242,60 +1082,32 @@ def simulate_zone(zone_id: str):
             zone["ground_movement"] + 10,
         )
 
-        simulated_risk, simulated_level = (
-            calculate_risk(
-                rainfall=simulated_rainfall,
-                soil_moisture=(
-                    simulated_soil_moisture
-                ),
-                slope=zone["slope"],
-                ground_movement=(
-                    simulated_ground_movement
-                ),
-            )
+        simulated_risk, simulated_level = calculate_risk(
+            rainfall=simulated_rainfall,
+            soil_moisture=simulated_soil_moisture,
+            slope=zone["slope"],
+            ground_movement=simulated_ground_movement,
         )
 
         return {
             "success": True,
-
             "zone_id": zone["id"],
             "state": zone["state"],
             "place": zone["place"],
-
             "current_risk": zone["risk"],
             "simulated_risk": simulated_risk,
-
             "risk_increase": round(
                 simulated_risk - zone["risk"],
                 2,
             ),
-
             "current_level": zone["level"],
             "simulated_level": simulated_level,
-
-            "current_rainfall": zone[
-                "rainfall"
-            ],
-
-            "simulated_rainfall": (
-                simulated_rainfall
-            ),
-
-            "current_soil_moisture": zone[
-                "soil_moisture"
-            ],
-
-            "simulated_soil_moisture": (
-                simulated_soil_moisture
-            ),
-
-            "current_ground_movement": zone[
-                "ground_movement"
-            ],
-
-            "simulated_ground_movement": (
-                simulated_ground_movement
-            ),
+            "current_rainfall": zone["rainfall"],
+            "simulated_rainfall": simulated_rainfall,
+            "current_soil_moisture": zone["soil_moisture"],
+            "simulated_soil_moisture": simulated_soil_moisture,
+            "current_ground_movement": zone["ground_movement"],
+            "simulated_ground_movement": simulated_ground_movement,
         }
 
     return {
