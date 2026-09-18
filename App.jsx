@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   MapContainer,
   TileLayer,
-  Marker,
+  CircleMarker,
   Popup,
   useMap,
 } from "react-leaflet";
@@ -24,155 +24,516 @@ import "leaflet/dist/leaflet.css";
 import "./App.css";
 
 /* =========================================================
-   STATES
+   INDIA - 36 STATES + UNION TERRITORIES
 ========================================================= */
 
 const states = [
-  {
-    id: "arunachal-pradesh",
-    name: "Arunachal Pradesh",
-    capital: "Itanagar",
-    region: "Eastern Himalayas",
-    coordinates: [27.0844, 93.6053],
-    latitude: 27.0844,
-    longitude: 93.6053,
-    area: "83,743 km²",
-    population: "1.4 million",
+  [
+    "andhra-pradesh",
+    "Andhra Pradesh",
+    "Amaravati",
+    "South",
+    15.9129,
+    79.7400,
+    "162,968 km²",
+    "53.9 million",
+  ],
+
+  [
+    "arunachal-pradesh",
+    "Arunachal Pradesh",
+    "Itanagar",
+    "North-East",
+    27.0844,
+    93.6053,
+    "83,743 km²",
+    "1.4 million",
+  ],
+
+  [
+    "assam",
+    "Assam",
+    "Dispur",
+    "North-East",
+    26.2006,
+    92.9376,
+    "78,438 km²",
+    "31.2 million",
+  ],
+
+  [
+    "bihar",
+    "Bihar",
+    "Patna",
+    "East",
+    25.0961,
+    85.3131,
+    "94,163 km²",
+    "104 million",
+  ],
+
+  [
+    "chhattisgarh",
+    "Chhattisgarh",
+    "Raipur",
+    "Central",
+    21.2787,
+    81.8661,
+    "135,192 km²",
+    "25.5 million",
+  ],
+
+  [
+    "goa",
+    "Goa",
+    "Panaji",
+    "West",
+    15.2993,
+    74.1240,
+    "3,702 km²",
+    "1.5 million",
+  ],
+
+  [
+    "gujarat",
+    "Gujarat",
+    "Gandhinagar",
+    "West",
+    22.2587,
+    71.1924,
+    "196,024 km²",
+    "60.4 million",
+  ],
+
+  [
+    "haryana",
+    "Haryana",
+    "Chandigarh",
+    "North",
+    29.0588,
+    76.0856,
+    "44,212 km²",
+    "25.4 million",
+  ],
+
+  [
+    "himachal-pradesh",
+    "Himachal Pradesh",
+    "Shimla",
+    "North",
+    31.1048,
+    77.1734,
+    "55,673 km²",
+    "6.9 million",
+  ],
+
+  [
+    "jharkhand",
+    "Jharkhand",
+    "Ranchi",
+    "East",
+    23.6102,
+    85.2799,
+    "79,716 km²",
+    "33 million",
+  ],
+
+  [
+    "karnataka",
+    "Karnataka",
+    "Bengaluru",
+    "South",
+    15.3173,
+    75.7139,
+    "191,791 km²",
+    "61.1 million",
+  ],
+
+  [
+    "kerala",
+    "Kerala",
+    "Thiruvananthapuram",
+    "South",
+    10.8505,
+    76.2711,
+    "38,863 km²",
+    "33.4 million",
+  ],
+
+  [
+    "madhya-pradesh",
+    "Madhya Pradesh",
+    "Bhopal",
+    "Central",
+    22.9734,
+    78.6569,
+    "308,252 km²",
+    "72.6 million",
+  ],
+
+  [
+    "maharashtra",
+    "Maharashtra",
+    "Mumbai",
+    "West",
+    19.7515,
+    75.7139,
+    "307,713 km²",
+    "112.4 million",
+  ],
+
+  [
+    "manipur",
+    "Manipur",
+    "Imphal",
+    "North-East",
+    24.6637,
+    93.9063,
+    "22,327 km²",
+    "2.9 million",
+  ],
+
+  [
+    "meghalaya",
+    "Meghalaya",
+    "Shillong",
+    "North-East",
+    25.4670,
+    91.3662,
+    "22,429 km²",
+    "3 million",
+  ],
+
+  [
+    "mizoram",
+    "Mizoram",
+    "Aizawl",
+    "North-East",
+    23.1645,
+    92.9376,
+    "21,081 km²",
+    "1.1 million",
+  ],
+
+  [
+    "nagaland",
+    "Nagaland",
+    "Kohima",
+    "North-East",
+    26.1584,
+    94.5624,
+    "16,579 km²",
+    "1.9 million",
+  ],
+
+  [
+    "odisha",
+    "Odisha",
+    "Bhubaneswar",
+    "East",
+    20.9517,
+    85.0985,
+    "155,707 km²",
+    "41.9 million",
+  ],
+
+  [
+    "punjab",
+    "Punjab",
+    "Chandigarh",
+    "North",
+    31.1471,
+    75.3412,
+    "50,362 km²",
+    "27.7 million",
+  ],
+
+  [
+    "rajasthan",
+    "Rajasthan",
+    "Jaipur",
+    "North",
+    27.0238,
+    74.2179,
+    "342,239 km²",
+    "68.6 million",
+  ],
+
+  [
+    "sikkim",
+    "Sikkim",
+    "Gangtok",
+    "North-East",
+    27.5330,
+    88.5122,
+    "7,096 km²",
+    "610,000",
+  ],
+
+  [
+    "tamil-nadu",
+    "Tamil Nadu",
+    "Chennai",
+    "South",
+    11.1271,
+    78.6569,
+    "130,058 km²",
+    "72.1 million",
+  ],
+
+  [
+    "telangana",
+    "Telangana",
+    "Hyderabad",
+    "South",
+    18.1124,
+    79.0193,
+    "114,840 km²",
+    "35.2 million",
+  ],
+
+  [
+    "tripura",
+    "Tripura",
+    "Agartala",
+    "North-East",
+    23.9408,
+    91.9882,
+    "10,486 km²",
+    "3.7 million",
+  ],
+
+  [
+    "uttar-pradesh",
+    "Uttar Pradesh",
+    "Lucknow",
+    "North",
+    26.8467,
+    80.9462,
+    "243,286 km²",
+    "199.8 million",
+  ],
+
+  [
+    "uttarakhand",
+    "Uttarakhand",
+    "Dehradun",
+    "North",
+    30.0668,
+    79.0193,
+    "53,483 km²",
+    "10.1 million",
+  ],
+
+  [
+    "west-bengal",
+    "West Bengal",
+    "Kolkata",
+    "East",
+    22.9868,
+    87.8550,
+    "88,752 km²",
+    "91.3 million",
+  ],
+
+  [
+    "andaman-nicobar",
+    "Andaman and Nicobar Islands",
+    "Port Blair",
+    "Union Territory",
+    11.7401,
+    92.6586,
+    "8,249 km²",
+    "380,000",
+  ],
+
+  [
+    "chandigarh",
+    "Chandigarh",
+    "Chandigarh",
+    "Union Territory",
+    30.7333,
+    76.7794,
+    "114 km²",
+    "1.1 million",
+  ],
+
+  [
+    "dadra-nagar-haveli-daman-diu",
+    "Dadra and Nagar Haveli and Daman and Diu",
+    "Daman",
+    "Union Territory",
+    20.3974,
+    72.8328,
+    "602 km²",
+    "590,000",
+  ],
+
+  [
+    "delhi",
+    "Delhi",
+    "New Delhi",
+    "Union Territory",
+    28.6139,
+    77.2090,
+    "1,483 km²",
+    "16.8 million",
+  ],
+
+  [
+    "jammu-kashmir",
+    "Jammu and Kashmir",
+    "Srinagar",
+    "Union Territory",
+    34.0837,
+    74.7973,
+    "42,241 km²",
+    "12.3 million",
+  ],
+
+  [
+    "ladakh",
+    "Ladakh",
+    "Leh",
+    "Union Territory",
+    34.1526,
+    77.5771,
+    "59,146 km²",
+    "274,000",
+  ],
+
+  [
+    "lakshadweep",
+    "Lakshadweep",
+    "Kavaratti",
+    "Union Territory",
+    10.5667,
+    72.6417,
+    "32 km²",
+    "64,000",
+  ],
+
+  [
+    "puducherry",
+    "Puducherry",
+    "Puducherry",
+    "Union Territory",
+    11.9416,
+    79.8083,
+    "490 km²",
+    "1.2 million",
+  ],
+].map(
+  ([
+    id,
+    name,
+    capital,
+    region,
+    latitude,
+    longitude,
+    area,
+    population,
+  ]) => ({
+    id,
+    name,
+    capital,
+    region,
+    coordinates: [latitude, longitude],
+    latitude,
+    longitude,
+    area,
+    population,
+
     description:
-      "Arunachal Pradesh contains high-altitude terrain, dense forests, and river valleys that require continuous environmental monitoring.",
+      `${name} is included in the nationwide environmental monitoring network of Sahaya Land.`,
+
     highlights: [
-      "Mountainous terrain",
-      "High forest coverage",
-      "River and landslide monitoring",
+      "Environmental monitoring",
+      "Risk assessment",
+      "Incident reporting",
     ],
-  },
-  {
-    id: "assam",
-    name: "Assam",
-    capital: "Dispur",
-    region: "Brahmaputra Valley",
-    coordinates: [26.2006, 92.9376],
-    latitude: 26.2006,
-    longitude: 92.9376,
-    area: "78,438 km²",
-    population: "31.2 million",
-    description:
-      "Assam is highly influenced by monsoon rainfall, river flooding, and changing soil moisture conditions across the Brahmaputra Valley.",
-    highlights: [
-      "Flood-prone river systems",
-      "Heavy monsoon rainfall",
-      "Agricultural land monitoring",
-    ],
-  },
-  {
-    id: "manipur",
-    name: "Manipur",
-    capital: "Imphal",
-    region: "Eastern Hills",
-    coordinates: [24.6637, 93.9063],
-    latitude: 24.6637,
-    longitude: 93.9063,
-    area: "22,327 km²",
-    population: "2.9 million",
-    description:
-      "Manipur includes valley and hill ecosystems where rainfall, soil moisture, and land-use changes affect environmental stability.",
-    highlights: [
-      "Valley and hill ecosystems",
-      "Seasonal rainfall changes",
-      "Land-use monitoring",
-    ],
-  },
-  {
-    id: "meghalaya",
-    name: "Meghalaya",
-    capital: "Shillong",
-    region: "Shillong Plateau",
-    coordinates: [25.467, 91.3662],
-    latitude: 25.467,
-    longitude: 91.3662,
-    area: "22,429 km²",
-    population: "3 million",
-    description:
-      "Meghalaya receives some of the highest rainfall levels in the region, making rainfall and soil saturation important monitoring factors.",
-    highlights: [
-      "Very high rainfall",
-      "Plateau and hill terrain",
-      "Soil saturation monitoring",
-    ],
-  },
-  {
-    id: "mizoram",
-    name: "Mizoram",
-    capital: "Aizawl",
-    region: "Mizo Hills",
-    coordinates: [23.1645, 92.9376],
-    latitude: 23.1645,
-    longitude: 92.9376,
-    area: "21,081 km²",
-    population: "1.1 million",
-    description:
-      "Mizoram’s steep hills and seasonal rainfall create a need for close observation of soil moisture and slope stability.",
-    highlights: [
-      "Steep hill slopes",
-      "Rainfall-sensitive terrain",
-      "Landslide risk observation",
-    ],
-  },
-  {
-    id: "nagaland",
-    name: "Nagaland",
-    capital: "Kohima",
-    region: "Naga Hills",
-    coordinates: [25.6751, 94.1086],
-    latitude: 25.6751,
-    longitude: 94.1086,
-    area: "16,579 km²",
-    population: "1.9 million",
-    description:
-      "Nagaland’s hilly landscape and forest ecosystems benefit from regular monitoring of rainfall, soil conditions, and land changes.",
-    highlights: [
-      "Hilly terrain",
-      "Forest ecosystems",
-      "Rainfall and soil tracking",
-    ],
-  },
-  {
-    id: "sikkim",
-    name: "Sikkim",
-    capital: "Gangtok",
-    region: "Eastern Himalayas",
-    coordinates: [27.533, 88.5122],
-    latitude: 27.533,
-    longitude: 88.5122,
-    area: "7,096 km²",
-    population: "610,000",
-    description:
-      "Sikkim’s Himalayan environment includes glaciers, mountain slopes, and river systems that require long-term observation.",
-    highlights: [
-      "Himalayan mountain systems",
-      "Glacial and river monitoring",
-      "Lower overall risk level",
-    ],
-  },
-  {
-    id: "tripura",
-    name: "Tripura",
-    capital: "Agartala",
-    region: "Eastern Plains",
-    coordinates: [23.9408, 91.9882],
-    latitude: 23.9408,
-    longitude: 91.9882,
-    area: "10,486 km²",
-    population: "3.7 million",
-    description:
-      "Tripura’s humid climate and dense vegetation make rainfall, soil moisture, and land-cover changes important indicators.",
-    highlights: [
-      "Humid climate",
-      "Dense vegetation",
-      "Rainfall-sensitive agricultural areas",
-    ],
-  },
-];
+  })
+);
+
+/* =========================================================
+   INDIA → REGION DIRECTORY
+========================================================= */
+
+const regionGroups = {
+  /* IMPORTANT:
+     This always contains ALL 36 states/UTs.
+     Therefore the default directory shows all India.
+  */
+
+  "All India": states.map((state) => state.id),
+
+  North: [
+    "punjab",
+    "haryana",
+    "himachal-pradesh",
+    "uttarakhand",
+    "uttar-pradesh",
+    "rajasthan",
+    "jammu-kashmir",
+    "ladakh",
+    "chandigarh",
+    "delhi",
+  ],
+
+  South: [
+    "andhra-pradesh",
+    "karnataka",
+    "kerala",
+    "tamil-nadu",
+    "telangana",
+    "puducherry",
+  ],
+
+  East: [
+    "bihar",
+    "jharkhand",
+    "odisha",
+    "west-bengal",
+  ],
+
+  West: [
+    "goa",
+    "gujarat",
+    "maharashtra",
+    "dadra-nagar-haveli-daman-diu",
+  ],
+
+  Central: [
+    "chhattisgarh",
+    "madhya-pradesh",
+  ],
+
+  "North-Eastern Region": [
+    "arunachal-pradesh",
+    "assam",
+    "manipur",
+    "meghalaya",
+    "mizoram",
+    "nagaland",
+    "sikkim",
+    "tripura",
+  ],
+
+  "Island Territories": [
+    "andaman-nicobar",
+    "lakshadweep",
+  ],
+};
+
+const regionOptions = Object.keys(regionGroups);
+
+const getRegionForState = (stateId) => {
+  return (
+    regionOptions.find((region) =>
+      regionGroups[region].includes(stateId)
+    ) || "All India"
+  );
+};
 
 /* =========================================================
    INCIDENT TYPES
@@ -203,95 +564,146 @@ const incidentStatuses = [
 const translations = {
   English: {
     language: "Select Language",
+
     chooseState: "Choose a state",
+
     searchStates: "Search states...",
+
     noStates: "No states found.",
-    chooseStateBegin: "Choose a state to begin",
+
+    chooseStateBegin:
+      "Choose a state to begin",
+
     selectStateDescription:
       "Select a state from the region directory to view its live environmental conditions, weather forecast, risk level, and monitoring recommendations.",
-    selectAnyState: "Select any state from the list",
+
+    selectAnyState:
+      "Select any state from the list",
 
     liveNotice: "Live data notice",
+
     liveNoticeText:
       "Weather and soil-moisture values are fetched from a live weather-data service. Overall risk is an estimated indicator, not an official disaster warning.",
 
-    communitySafety: "COMMUNITY SAFETY",
-    seeUnusual: "See something unusual?",
+    communitySafety:
+      "COMMUNITY SAFETY",
+
+    seeUnusual:
+      "See something unusual?",
+
     reportDescription:
       "Report road damage, rockfall, soil movement, or other environmental incidents.",
-    reportIncident: "Report an incident",
 
-    fieldOfficerDashboard: "Field officer dashboard",
-    hideOfficerDashboard: "Hide officer dashboard",
+    reportIncident:
+      "Report an incident",
 
-    communityReports: "COMMUNITY REPORTS",
-    recentReports: "Recent incident reports",
+    fieldOfficerDashboard:
+      "Field officer dashboard",
 
-    fieldOperations: "FIELD OPERATIONS",
-    officerDashboard: "Officer verification dashboard",
-    officerDescription:
-      "Review citizen reports and update their verification status and action taken.",
-    noReports:
-      "No incident reports are available for review yet.",
+    hideOfficerDashboard:
+      "Hide officer dashboard",
 
-    location: "Location",
-    state: "State",
-    submitted: "Submitted",
-    description: "Description",
-    severity: "Severity",
-    verificationStatus: "Verification status",
-    actionTaken: "Action taken",
+    communityReports:
+      "COMMUNITY REPORTS",
 
-    siteInspection:
-      "Example: Site inspection scheduled...",
+    recentReports:
+      "Recent incident reports",
 
-    selectedRegion: "SELECTED REGION",
-    estimatedRisk: "Estimated risk",
-    viewFullAnalysis: "View full analysis",
+    selectedRegion:
+      "SELECTED REGION",
 
-    liveEnvironmentalData: "Live environmental data",
-    lastUpdated: "Last updated",
-    refreshData: "Refresh data",
-    refreshing: "Refreshing...",
+    estimatedRisk:
+      "Estimated risk",
 
-    temperature: "TEMPERATURE",
-    soilMoisture: "SOIL MOISTURE",
-    rainfall: "RAINFALL",
-    overallRisk: "OVERALL RISK",
+    currentConditions:
+      "Current environmental conditions",
 
-    currentTemperature: "Current air temperature",
-    soilEstimate: "Live surface soil-moisture estimate",
-    currentRainfall: "Current precipitation level",
+    temperature:
+      "Temperature",
+
+    rainfall:
+      "Rainfall",
+
+    humidity:
+      "Humidity",
+
+    soilMoisture:
+      "Soil moisture",
+
+    riskScore:
+      "Risk score",
+
+    overallRisk:
+      "Overall risk",
+
+    currentTemperature:
+      "Current air temperature",
+
+    soilEstimate:
+      "Live surface soil-moisture estimate",
+
+    currentRainfall:
+      "Current precipitation level",
+
     estimatedIndicators:
       "Estimated from live environmental indicators",
-    notOfficial: "Not an official disaster warning",
 
-    currentWeather: "CURRENT WEATHER",
-    rainProbability: "Rain probability",
-    humidity: "Humidity",
+    notOfficial:
+      "Not an official disaster warning",
 
-    weatherOutlook: "WEATHER OUTLOOK",
-    sevenDayForecast: "7-day forecast",
-    today: "Today",
-    rain: "Rain",
-    forecastLoading: "Loading forecast...",
-    forecastUnavailable: "Forecast data is unavailable.",
+    currentWeather:
+      "CURRENT WEATHER",
 
-    visualInsights: "VISUAL INSIGHTS",
-    weatherTrends: "Weather trends",
+    rainProbability:
+      "Rain probability",
 
-    temperatureTrend: "Temperature trend",
+    weatherOutlook:
+      "WEATHER OUTLOOK",
+
+    sevenDayForecast:
+      "7-day forecast",
+
+    today:
+      "Today",
+
+    rain:
+      "Rain",
+
+    forecastLoading:
+      "Loading forecast...",
+
+    forecastUnavailable:
+      "Forecast data is unavailable.",
+
+    visualInsights:
+      "VISUAL INSIGHTS",
+
+    weatherTrends:
+      "Weather trends",
+
+    temperatureTrend:
+      "Temperature trend",
+
     temperatureDescription:
       "Maximum and minimum temperature over the next 7 days",
 
-    rainfallForecast: "Rainfall forecast",
+    rainfallForecast:
+      "Rainfall forecast",
+
     rainfallDescription:
       "Expected rainfall for the next 7 days",
 
-    advisories: "ENVIRONMENTAL ADVISORIES",
-    emergencyAlerts: "Emergency alerts",
-    hideAlerts: "Hide alerts",
-    showAlerts: "Show alerts",
+    advisories:
+      "ENVIRONMENTAL ADVISORIES",
+
+    emergencyAlerts:
+      "Emergency alerts",
+
+    hideAlerts:
+      "Hide alerts",
+
+    showAlerts:
+      "Show alerts",
 
     advisoryNotice:
       "These are automatically generated environmental advisories based on available weather indicators. They are not official government warnings.",
@@ -299,32 +711,57 @@ const translations = {
     alertsUnavailable:
       "Alerts will appear when live data becomes available.",
 
-    suggestedAction: "Suggested action",
+    suggestedAction:
+      "Suggested action",
 
-    interactiveMap: "INTERACTIVE MAP",
-    northEasternRegion: "North Eastern Region",
+    interactiveMap:
+      "INTERACTIVE MAP",
+
+    northEasternRegion:
+      "India environmental monitoring map",
 
     low: "Low",
+
     moderate: "Moderate",
+
     high: "High",
 
-    regionalAnalysis: "REGIONAL ANALYSIS",
-    insights: "insights",
-    liveOverview: "Live environmental overview",
-    monitoringPriorities: "Monitoring priorities",
-    windSpeed: "Wind speed",
+    safe: "Safe",
 
-    citizenReporting: "CITIZEN REPORTING",
+    regionalAnalysis:
+      "REGIONAL ANALYSIS",
+
+    insights:
+      "insights",
+
+    liveOverview:
+      "Live environmental overview",
+
+    monitoringPriorities:
+      "Monitoring priorities",
+
+    windSpeed:
+      "Wind speed",
+
+    citizenReporting:
+      "CITIZEN REPORTING",
+
     incidentModalDescription:
       "Help the monitoring team understand what is happening on the ground.",
 
-    incidentType: "Incident type",
-    photograph: "Photograph",
+    incidentType:
+      "Incident type",
+
+    photograph:
+      "Photograph",
+
     photographHelp:
       "Optional. Upload a photograph of the reported condition.",
 
     cancel: "Cancel",
-    submitReport: "Submit report",
+
+    submitReport:
+      "Submit report",
 
     incidentSubmitted:
       "Incident report submitted successfully.",
@@ -334,6 +771,66 @@ const translations = {
 
     enterLocation:
       "Please enter the incident location.",
+
+    severity:
+      "Severity",
+
+    location:
+      "Location",
+
+    description:
+      "Description",
+
+    state:
+      "State",
+
+    status:
+      "Status",
+
+    actionTaken:
+      "Action taken",
+
+    update:
+      "Update",
+
+    noReports:
+      "No incident reports submitted yet.",
+
+    refreshData:
+      "Refresh data",
+
+    liveMonitoring:
+      "Live monitoring mode",
+
+    liveEnvironmentalData:
+      "Live environmental data",
+
+    lastUpdated:
+      "Last updated",
+
+    waiting:
+      "Waiting",
+
+    riskZone:
+      "RISK ZONE",
+
+    riskZoneTitle:
+      "India risk-zone overview",
+
+    riskZoneDescription:
+      "Compare estimated environmental risk across all Indian states and Union Territories using live weather indicators.",
+
+    selectRiskState:
+      "Select a risk zone",
+
+    liveRisk:
+      "Live estimated risk",
+
+    riskNotOfficial:
+      "Prototype indicator only — not an official disaster warning.",
+
+    mapRisk:
+      "Risk level",
   },
 
   Hindi: {
@@ -341,487 +838,125 @@ const translations = {
     chooseState: "राज्य चुनें",
     searchStates: "राज्य खोजें...",
     noStates: "कोई राज्य नहीं मिला।",
-
-    chooseStateBegin:
-      "शुरू करने के लिए राज्य चुनें",
-
-    selectStateDescription:
-      "लाइव पर्यावरणीय स्थिति, मौसम पूर्वानुमान, जोखिम स्तर और निगरानी सुझाव देखने के लिए किसी राज्य का चयन करें।",
-
-    selectAnyState:
-      "सूची से कोई राज्य चुनें",
-
+    chooseStateBegin: "शुरू करने के लिए राज्य चुनें",
+    selectAnyState: "सूची से कोई राज्य चुनें",
     liveNotice: "लाइव डेटा सूचना",
-
     liveNoticeText:
-      "मौसम और मिट्टी की नमी का डेटा लाइव मौसम सेवा से लिया जाता है। कुल जोखिम एक अनुमानित संकेतक है, आधिकारिक आपदा चेतावनी नहीं।",
-
+      "मौसम और मिट्टी की नमी का डेटा लाइव मौसम सेवा से लिया जाता है। कुल जोखिम एक अनुमानित संकेतक है।",
     communitySafety: "सामुदायिक सुरक्षा",
     seeUnusual: "कुछ असामान्य दिखाई दिया?",
-
-    reportDescription:
-      "सड़क क्षति, पत्थर गिरने, मिट्टी खिसकने या अन्य पर्यावरणीय घटनाओं की रिपोर्ट करें।",
-
     reportIncident: "घटना की रिपोर्ट करें",
-
-    fieldOfficerDashboard:
-      "अधिकारी डैशबोर्ड",
-
+    fieldOfficerDashboard: "अधिकारी डैशबोर्ड",
     hideOfficerDashboard:
       "अधिकारी डैशबोर्ड छिपाएँ",
-
-    communityReports: "सामुदायिक रिपोर्ट",
-    recentReports: "हाल की घटना रिपोर्ट",
-
-    fieldOperations: "क्षेत्रीय कार्य",
-
-    officerDashboard:
-      "अधिकारी सत्यापन डैशबोर्ड",
-
-    officerDescription:
-      "नागरिक रिपोर्ट की समीक्षा करें और उनकी स्थिति तथा कार्रवाई अपडेट करें।",
-
-    noReports:
-      "समीक्षा के लिए अभी कोई घटना रिपोर्ट उपलब्ध नहीं है।",
-
-    location: "स्थान",
-    state: "राज्य",
-    submitted: "जमा किया गया",
-    description: "विवरण",
-    severity: "गंभीरता",
-
-    verificationStatus:
-      "सत्यापन स्थिति",
-
-    actionTaken: "की गई कार्रवाई",
-
-    siteInspection:
-      "उदाहरण: स्थल निरीक्षण निर्धारित किया गया...",
-
-    selectedRegion: "चयनित क्षेत्र",
-    estimatedRisk: "अनुमानित जोखिम",
-    viewFullAnalysis: "पूरा विश्लेषण देखें",
-
-    liveEnvironmentalData:
-      "लाइव पर्यावरणीय डेटा",
-
-    lastUpdated: "अंतिम अपडेट",
-    refreshData: "डेटा रिफ्रेश करें",
-    refreshing: "रिफ्रेश हो रहा है...",
-
     temperature: "तापमान",
-    soilMoisture: "मिट्टी की नमी",
     rainfall: "वर्षा",
+    humidity: "आर्द्रता",
+    soilMoisture: "मिट्टी की नमी",
+    riskScore: "जोखिम स्कोर",
     overallRisk: "कुल जोखिम",
-
-    currentTemperature:
-      "वर्तमान वायु तापमान",
-
-    soilEstimate:
-      "लाइव सतही मिट्टी की नमी का अनुमान",
-
-    currentRainfall:
-      "वर्तमान वर्षा स्तर",
-
-    estimatedIndicators:
-      "लाइव पर्यावरणीय संकेतकों से अनुमानित",
-
-    notOfficial:
-      "आधिकारिक आपदा चेतावनी नहीं",
-
-    currentWeather: "वर्तमान मौसम",
-    rainProbability: "वर्षा की संभावना",
-    humidity: "नमी",
-
-    weatherOutlook: "मौसम पूर्वानुमान",
-    sevenDayForecast: "7-दिन का पूर्वानुमान",
-
-    today: "आज",
-    rain: "वर्षा",
-
-    forecastLoading:
-      "पूर्वानुमान लोड हो रहा है...",
-
-    forecastUnavailable:
-      "पूर्वानुमान डेटा उपलब्ध नहीं है।",
-
-    visualInsights: "दृश्य जानकारी",
-    weatherTrends: "मौसम के रुझान",
-
-    temperatureTrend:
-      "तापमान का रुझान",
-
-    temperatureDescription:
-      "अगले 7 दिनों का अधिकतम और न्यूनतम तापमान",
-
-    rainfallForecast:
-      "वर्षा पूर्वानुमान",
-
-    rainfallDescription:
-      "अगले 7 दिनों की अपेक्षित वर्षा",
-
-    advisories: "पर्यावरणीय सलाह",
-    emergencyAlerts: "आपातकालीन अलर्ट",
-
-    hideAlerts: "अलर्ट छिपाएँ",
-    showAlerts: "अलर्ट दिखाएँ",
-
-    advisoryNotice:
-      "ये उपलब्ध मौसम संकेतकों के आधार पर स्वचालित रूप से बनाए गए पर्यावरणीय सुझाव हैं। ये आधिकारिक सरकारी चेतावनी नहीं हैं।",
-
-    alertsUnavailable:
-      "लाइव डेटा उपलब्ध होने पर अलर्ट दिखाई देंगे।",
-
-    suggestedAction:
-      "सुझाई गई कार्रवाई",
-
-    interactiveMap: "इंटरैक्टिव मानचित्र",
-
-    northEasternRegion:
-      "उत्तर-पूर्वी क्षेत्र",
-
     low: "कम",
     moderate: "मध्यम",
     high: "उच्च",
-
-    regionalAnalysis:
-      "क्षेत्रीय विश्लेषण",
-
-    insights: "जानकारी",
-
-    liveOverview:
-      "लाइव पर्यावरणीय अवलोकन",
-
-    monitoringPriorities:
-      "निगरानी प्राथमिकताएँ",
-
-    windSpeed: "हवा की गति",
-
-    citizenReporting:
-      "नागरिक रिपोर्टिंग",
-
-    incidentModalDescription:
-      "निगरानी टीम को जमीन पर हो रही स्थिति समझने में सहायता करें।",
-
-    incidentType: "घटना का प्रकार",
-
-    photograph: "फोटो",
-
-    photographHelp:
-      "वैकल्पिक। रिपोर्ट की गई स्थिति का फोटो अपलोड करें।",
-
-    cancel: "रद्द करें",
-
-    submitReport:
-      "रिपोर्ट जमा करें",
-
-    incidentSubmitted:
-      "घटना रिपोर्ट सफलतापूर्वक जमा की गई।",
-
-    enterDescription:
-      "कृपया घटना का विवरण दर्ज करें।",
-
-    enterLocation:
-      "कृपया घटना का स्थान दर्ज करें।",
+    safe: "सुरक्षित",
+    refreshData: "डेटा रीफ्रेश करें",
   },
 
   Tamil: {
     language: "மொழியைத் தேர்ந்தெடுக்கவும்",
-
-    chooseState:
-      "ஒரு மாநிலத்தைத் தேர்ந்தெடுக்கவும்",
-
-    searchStates:
-      "மாநிலங்களைத் தேடுங்கள்...",
-
-    noStates:
-      "மாநிலங்கள் எதுவும் கிடைக்கவில்லை.",
-
+    chooseState: "மாநிலத்தைத் தேர்ந்தெடுக்கவும்",
+    searchStates: "மாநிலங்களைத் தேடுங்கள்...",
+    noStates: "மாநிலங்கள் எதுவும் இல்லை.",
     chooseStateBegin:
       "தொடங்க ஒரு மாநிலத்தைத் தேர்ந்தெடுக்கவும்",
-
-    selectStateDescription:
-      "நேரடி சுற்றுச்சூழல் நிலை, வானிலை முன்னறிவிப்பு, அபாய நிலை மற்றும் கண்காணிப்பு பரிந்துரைகளைப் பார்க்க ஒரு மாநிலத்தைத் தேர்ந்தெடுக்கவும்.",
-
     selectAnyState:
-      "பட்டியலில் இருந்து ஏதேனும் ஒரு மாநிலத்தைத் தேர்ந்தெடுக்கவும்",
-
-    liveNotice:
-      "நேரடி தரவு அறிவிப்பு",
-
+      "பட்டியலில் இருந்து எந்த மாநிலத்தையும் தேர்ந்தெடுக்கவும்",
+    liveNotice: "நேரடி தரவு தகவல்",
     liveNoticeText:
-      "வானிலை மற்றும் மண் ஈரப்பதத் தரவுகள் நேரடி வானிலை சேவையிலிருந்து பெறப்படுகின்றன. மொத்த அபாய நிலை ஒரு மதிப்பீடு மட்டுமே; இது அதிகாரப்பூர்வ பேரிடர் எச்சரிக்கை அல்ல.",
-
-    communitySafety:
-      "சமூக பாதுகாப்பு",
-
+      "வானிலை மற்றும் மண் ஈரப்பதத் தரவுகள் நேரடி வானிலை சேவையிலிருந்து பெறப்படுகின்றன.",
+    communitySafety: "சமூக பாதுகாப்பு",
     seeUnusual:
-      "வழக்கத்திற்கு மாறான ஏதாவது காண்கிறீர்களா?",
-
-    reportDescription:
-      "சாலை சேதம், பாறை சரிவு, மண் நகர்வு அல்லது பிற சுற்றுச்சூழல் சம்பவங்களைப் புகாரளிக்கவும்.",
-
+      "ஏதேனும் அசாதாரணமானதைப் பார்த்தீர்களா?",
     reportIncident:
       "சம்பவத்தைப் புகாரளிக்கவும்",
-
     fieldOfficerDashboard:
-      "கள அதிகாரி டாஷ்போர்டு",
-
+      "கள அலுவலர் டாஷ்போர்டு",
     hideOfficerDashboard:
-      "அதிகாரி டாஷ்போர்டை மறைக்கவும்",
-
-    communityReports:
-      "சமூகப் புகார்கள்",
-
-    recentReports:
-      "சமீபத்திய சம்பவப் புகார்கள்",
-
-    fieldOperations:
-      "கள செயல்பாடுகள்",
-
-    officerDashboard:
-      "அதிகாரி சரிபார்ப்பு டாஷ்போர்டு",
-
-    officerDescription:
-      "பொதுமக்களின் புகார்களை மதிப்பாய்வு செய்து அவற்றின் சரிபார்ப்பு நிலை மற்றும் எடுக்கப்பட்ட நடவடிக்கையைப் புதுப்பிக்கவும்.",
-
-    noReports:
-      "மதிப்பாய்வு செய்ய இதுவரை எந்த சம்பவப் புகார்களும் இல்லை.",
-
-    location: "இடம்",
-    state: "மாநிலம்",
-    submitted: "சமர்ப்பிக்கப்பட்டது",
-    description: "விளக்கம்",
-    severity: "தீவிரம்",
-
-    verificationStatus:
-      "சரிபார்ப்பு நிலை",
-
-    actionTaken:
-      "எடுக்கப்பட்ட நடவடிக்கை",
-
-    siteInspection:
-      "உதாரணம்: இட ஆய்வு திட்டமிடப்பட்டுள்ளது...",
-
-    selectedRegion:
-      "தேர்ந்தெடுக்கப்பட்ட பகுதி",
-
-    estimatedRisk:
-      "மதிப்பிடப்பட்ட அபாயம்",
-
-    viewFullAnalysis:
-      "முழு பகுப்பாய்வைப் பார்க்கவும்",
-
-    liveEnvironmentalData:
-      "நேரடி சுற்றுச்சூழல் தரவு",
-
-    lastUpdated:
-      "கடைசியாக புதுப்பிக்கப்பட்டது",
-
+      "அலுவலர் டாஷ்போர்டை மறைக்கவும்",
+    temperature: "வெப்பநிலை",
+    rainfall: "மழைப்பொழிவு",
+    humidity: "ஈரப்பதம்",
+    soilMoisture: "மண் ஈரப்பதம்",
+    riskScore: "ஆபத்து மதிப்பெண்",
+    overallRisk: "மொத்த ஆபத்து",
+    low: "குறைவு",
+    moderate: "மிதமான",
+    high: "அதிகம்",
+    safe: "பாதுகாப்பானது",
     refreshData:
       "தரவைப் புதுப்பிக்கவும்",
-
-    refreshing:
-      "புதுப்பிக்கப்படுகிறது...",
-
-    temperature:
-      "வெப்பநிலை",
-
-    soilMoisture:
-      "மண் ஈரப்பதம்",
-
-    rainfall:
-      "மழைப்பொழிவு",
-
-    overallRisk:
-      "மொத்த அபாய நிலை",
-
-    currentTemperature:
-      "தற்போதைய காற்றின் வெப்பநிலை",
-
-    soilEstimate:
-      "நேரடி மேற்பரப்பு மண் ஈரப்பத மதிப்பீடு",
-
-    currentRainfall:
-      "தற்போதைய மழைப்பொழிவு அளவு",
-
-    estimatedIndicators:
-      "நேரடி சுற்றுச்சூழல் குறியீடுகளின் அடிப்படையில் மதிப்பிடப்பட்டது",
-
-    notOfficial:
-      "இது அதிகாரப்பூர்வ பேரிடர் எச்சரிக்கை அல்ல",
-
-    currentWeather:
-      "தற்போதைய வானிலை",
-
-    rainProbability:
-      "மழைக்கான வாய்ப்பு",
-
-    humidity:
-      "ஈரப்பதம்",
-
-    weatherOutlook:
-      "வானிலை முன்னறிவிப்பு",
-
-    sevenDayForecast:
-      "7 நாள் முன்னறிவிப்பு",
-
-    today:
-      "இன்று",
-
-    rain:
-      "மழை",
-
-    forecastLoading:
-      "முன்னறிவிப்பு ஏற்றப்படுகிறது...",
-
-    forecastUnavailable:
-      "முன்னறிவிப்பு தரவு கிடைக்கவில்லை.",
-
-    visualInsights:
-      "காட்சி தகவல்கள்",
-
-    weatherTrends:
-      "வானிலை மாற்றங்கள்",
-
-    temperatureTrend:
-      "வெப்பநிலை மாற்றம்",
-
-    temperatureDescription:
-      "அடுத்த 7 நாட்களின் அதிகபட்ச மற்றும் குறைந்தபட்ச வெப்பநிலை",
-
-    rainfallForecast:
-      "மழைப்பொழிவு முன்னறிவிப்பு",
-
-    rainfallDescription:
-      "அடுத்த 7 நாட்களில் எதிர்பார்க்கப்படும் மழைப்பொழிவு",
-
-    advisories:
-      "சுற்றுச்சூழல் ஆலோசனைகள்",
-
-    emergencyAlerts:
-      "அவசர எச்சரிக்கைகள்",
-
-    hideAlerts:
-      "எச்சரிக்கைகளை மறைக்கவும்",
-
-    showAlerts:
-      "எச்சரிக்கைகளைக் காட்டவும்",
-
-    advisoryNotice:
-      "கிடைக்கக்கூடிய வானிலை குறியீடுகளின் அடிப்படையில் இந்த சுற்றுச்சூழல் ஆலோசனைகள் தானாக உருவாக்கப்படுகின்றன. இவை அதிகாரப்பூர்வ அரசு எச்சரிக்கைகள் அல்ல.",
-
-    alertsUnavailable:
-      "நேரடி தரவு கிடைக்கும்போது எச்சரிக்கைகள் தோன்றும்.",
-
-    suggestedAction:
-      "பரிந்துரைக்கப்பட்ட நடவடிக்கை",
-
-    interactiveMap:
-      "ஊடாடும் வரைபடம்",
-
-    northEasternRegion:
-      "வடகிழக்கு பிராந்தியம்",
-
-    low:
-      "குறைவு",
-
-    moderate:
-      "மிதமான",
-
-    high:
-      "அதிகம்",
-
-    regionalAnalysis:
-      "பிராந்திய பகுப்பாய்வு",
-
-    insights:
-      "தகவல்கள்",
-
-    liveOverview:
-      "நேரடி சுற்றுச்சூழல் மேலோட்டம்",
-
-    monitoringPriorities:
-      "கண்காணிப்பு முன்னுரிமைகள்",
-
-    windSpeed:
-      "காற்றின் வேகம்",
-
-    citizenReporting:
-      "பொதுமக்கள் புகாரளிப்பு",
-
-    incidentModalDescription:
-      "தரையில் என்ன நடக்கிறது என்பதை கண்காணிப்பு குழு புரிந்துகொள்ள உதவுங்கள்.",
-
-    incidentType:
-      "சம்பவ வகை",
-
-    photograph:
-      "புகைப்படம்",
-
-    photographHelp:
-      "விருப்பத்தேர்வு. புகாரளிக்கப்பட்ட நிலையின் புகைப்படத்தைப் பதிவேற்றவும்.",
-
-    cancel:
-      "ரத்து செய்யவும்",
-
-    submitReport:
-      "புகாரைச் சமர்ப்பிக்கவும்",
-
-    incidentSubmitted:
-      "சம்பவப் புகார் வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது.",
-
-    enterDescription:
-      "சம்பவத்தின் விளக்கத்தை உள்ளிடவும்.",
-
-    enterLocation:
-      "சம்பவம் நடந்த இடத்தை உள்ளிடவும்.",
   },
 };
-
-/* =========================================================
-   MAP CONTROLLER
-========================================================= */
-
-function MapController({ selectedState }) {
-  const map = useMap();
-
-  useEffect(() => {
-    if (!selectedState) return;
-
-    map.flyTo(selectedState.coordinates, 7, {
-      duration: 1.2,
-    });
-  }, [map, selectedState]);
-
-  return null;
-}
 
 /* =========================================================
    RISK CALCULATION
 ========================================================= */
 
-function calculateRisk(rainfall, soilMoisture) {
-  const rain = Number(rainfall) || 0;
-  const moisture = Number(soilMoisture) || 0;
+function calculateRisk(
+  rainfall,
+  soilMoisture
+) {
+  const rain =
+    Number(rainfall) || 0;
 
-  if (rain >= 20 || moisture >= 0.8) {
+  const moisture =
+    Number(soilMoisture) || 0;
+
+  const rainScore = Math.min(
+    (rain / 30) * 60,
+    60
+  );
+
+  const moistureScore = Math.min(
+    moisture * 40,
+    40
+  );
+
+  const score = Math.round(
+    Math.min(
+      rainScore + moistureScore,
+      100
+    )
+  );
+
+  if (
+    score >= 60 ||
+    rain >= 20 ||
+    moisture >= 0.8
+  ) {
     return {
       label: "High",
       level: "high",
+      score,
     };
   }
 
-  if (rain >= 5 || moisture >= 0.6) {
+  if (
+    score >= 30 ||
+    rain >= 5 ||
+    moisture >= 0.6
+  ) {
     return {
       label: "Moderate",
       level: "moderate",
+      score,
     };
   }
 
   return {
     label: "Low",
     level: "low",
+    score,
   };
 }
 
@@ -829,7 +964,9 @@ function calculateRisk(rainfall, soilMoisture) {
    WEATHER DESCRIPTION
 ========================================================= */
 
-function getWeatherDescription(weatherCode) {
+function getWeatherDescription(
+  weatherCode
+) {
   const descriptions = {
     0: "Clear sky",
     1: "Mainly clear",
@@ -871,32 +1008,54 @@ function getWeatherDescription(weatherCode) {
    WEATHER ICON
 ========================================================= */
 
-function getWeatherIcon(weatherCode) {
-  if ([95, 96, 99].includes(weatherCode)) {
+function getWeatherIcon(
+  weatherCode
+) {
+  if (
+    [95, 96, 99].includes(
+      weatherCode
+    )
+  ) {
     return "⛈️";
   }
 
-  if ([80, 81, 82, 85, 86].includes(weatherCode)) {
+  if (
+    [80, 81, 82].includes(
+      weatherCode
+    )
+  ) {
     return "🌧️";
   }
 
-  if ([61, 63, 65, 66, 67].includes(weatherCode)) {
-    return "☔";
-  }
-
-  if ([51, 53, 55, 56, 57].includes(weatherCode)) {
+  if (
+    [61, 63, 65].includes(
+      weatherCode
+    )
+  ) {
     return "🌦️";
   }
 
-  if ([45, 48].includes(weatherCode)) {
+  if (
+    [51, 53, 55].includes(
+      weatherCode
+    )
+  ) {
+    return "🌦️";
+  }
+
+  if (
+    [45, 48].includes(
+      weatherCode
+    )
+  ) {
     return "🌫️";
   }
 
-  if (weatherCode === 3) {
-    return "☁️";
-  }
-
-  if ([1, 2].includes(weatherCode)) {
+  if (
+    [1, 2].includes(
+      weatherCode
+    )
+  ) {
     return "⛅";
   }
 
@@ -907,17 +1066,31 @@ function getWeatherIcon(weatherCode) {
    ADVISORIES
 ========================================================= */
 
-function generateAdvisories(state) {
-  if (!state || state.overallRisk === "Loading") {
+function generateAdvisories(
+  state
+) {
+  if (
+    !state ||
+    state.overallRisk ===
+      "Loading" ||
+    state.overallRisk ===
+      "Waiting"
+  ) {
     return [];
   }
 
-  const rainfall = Number(state.rainfall) || 0;
+  const rainfall =
+    Number(state.rainfall) || 0;
+
   const soilMoisture =
-    Number(state.soilMoisture) || 0;
+    Number(
+      state.soilMoisture
+    ) || 0;
 
   const rainProbability =
-    Number(state.rainProbability) || 0;
+    Number(
+      state.rainProbability
+    ) || 0;
 
   const windSpeed =
     Number(state.windSpeed) || 0;
@@ -930,10 +1103,13 @@ function generateAdvisories(state) {
   ) {
     advisories.push({
       level: "high",
+
       title:
         "High environmental stress detected",
+
       message:
         "Heavy rainfall or high soil moisture may increase the possibility of flooding, waterlogging, or slope instability.",
+
       action:
         "Monitor nearby rivers, drainage systems, and vulnerable slopes.",
     });
@@ -943,44 +1119,60 @@ function generateAdvisories(state) {
   ) {
     advisories.push({
       level: "moderate",
+
       title:
         "Moderate environmental conditions",
+
       message:
         "Rainfall or soil moisture is above the normal monitoring threshold.",
+
       action:
         "Continue observation of local drainage, agricultural areas, and hill slopes.",
     });
   } else {
     advisories.push({
       level: "low",
+
       title:
         "No major environmental stress detected",
+
       message:
         "Current rainfall and soil-moisture indicators remain within the lower estimated-risk range.",
+
       action:
         "Continue regular environmental monitoring.",
     });
   }
 
-  if (rainProbability >= 70) {
+  if (
+    rainProbability >= 70
+  ) {
     advisories.push({
       level: "moderate",
+
       title:
         "Rainfall probability is elevated",
+
       message:
         "The forecast indicates a higher chance of precipitation during the monitoring period.",
+
       action:
         "Keep checking local weather updates and avoid relying only on this prototype.",
     });
   }
 
-  if (windSpeed >= 35) {
+  if (
+    windSpeed >= 35
+  ) {
     advisories.push({
       level: "moderate",
+
       title:
         "Strong wind conditions",
+
       message:
         "Current wind speed is relatively high and may affect exposed areas or temporary structures.",
+
       action:
         "Exercise caution around trees, loose objects, and exposed locations.",
     });
@@ -990,21 +1182,92 @@ function generateAdvisories(state) {
 }
 
 /* =========================================================
+   MAP CONTROLLER
+========================================================= */
+
+function MapController({
+  selectedState,
+}) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (
+      !selectedState
+    ) {
+      return;
+    }
+
+    map.flyTo(
+      selectedState.coordinates,
+      6,
+      {
+        duration: 1.2,
+      }
+    );
+  }, [
+    map,
+    selectedState,
+  ]);
+
+  return null;
+}
+
+/* =========================================================
    MAIN APP
 ========================================================= */
 
 function App() {
+  /* =======================================================
+     IMPORTANT FIX
+     
+     We intentionally DO NOT restore selectedRegion from
+     localStorage.
+
+     Older versions could save:
+       "North-Eastern Region"
+
+     and then every refresh would show only 8 states.
+
+     The directory now always starts with ALL INDIA.
+  ======================================================= */
+
   const [selectedStateId, setSelectedStateId] =
     useState(() => {
-      return (
+      const saved =
         localStorage.getItem(
           "sahaya-selected-state"
-        ) || null
+        );
+
+      return (
+        states.some(
+          (state) =>
+            state.id === saved
+        )
+          ? saved
+          : "andhra-pradesh"
       );
     });
 
+  const [selectedRegion, setSelectedRegion] =
+    useState("All India");
+
   const [searchTerm, setSearchTerm] =
     useState("");
+
+  const [selectedRiskStateId, setSelectedRiskStateId] =
+    useState(() => {
+      const saved =
+        localStorage.getItem(
+          "sahaya-selected-risk-state"
+        );
+
+      return states.some(
+        (state) =>
+          state.id === saved
+      )
+        ? saved
+        : "andhra-pradesh";
+    });
 
   const [showFullAnalysis, setShowFullAnalysis] =
     useState(false);
@@ -1030,11 +1293,42 @@ function App() {
   const [language, setLanguage] =
     useState("English");
 
-  const text = translations[language];
+  const text =
+    translations[language];
 
-  /* =====================================================
+  /* =======================================================
+     CITIZEN REPORTING
+  ======================================================= */
+
+  const [
+    showIncidentForm,
+    setShowIncidentForm,
+  ] = useState(false);
+
+  const [
+    incidentReports,
+    setIncidentReports,
+  ] = useState([]);
+
+  const [
+    showOfficerDashboard,
+    setShowOfficerDashboard,
+  ] = useState(false);
+
+  const [
+    incidentForm,
+    setIncidentForm,
+  ] = useState({
+    type: "Road crack",
+    description: "",
+    location: "",
+    severity: "Moderate",
+    photograph: null,
+  });
+
+  /* =======================================================
      SAVE SELECTED STATE
-  ===================================================== */
+  ======================================================= */
 
   useEffect(() => {
     if (selectedStateId) {
@@ -1042,223 +1336,398 @@ function App() {
         "sahaya-selected-state",
         selectedStateId
       );
-    } else {
-      localStorage.removeItem(
-        "sahaya-selected-state"
-      );
     }
   }, [selectedStateId]);
 
-  /* =====================================================
-     CITIZEN REPORTING
-  ===================================================== */
+  /* =======================================================
+     SAVE RISK STATE
+  ======================================================= */
 
-  const [showIncidentForm, setShowIncidentForm] =
-    useState(false);
-
-  const [incidentReports, setIncidentReports] =
-    useState([]);
-
-  /* =====================================================
-     FIELD OFFICER DASHBOARD
-  ===================================================== */
-
-  const [
-    showOfficerDashboard,
-    setShowOfficerDashboard,
-  ] = useState(false);
-
-  const [incidentForm, setIncidentForm] =
-    useState({
-      type: "Road crack",
-      description: "",
-      location: "",
-      severity: "Moderate",
-      photograph: null,
-    });
-
-  const selectedState = states.find(
-    (state) =>
-      state.id === selectedStateId
-  );
-
-  const filteredStates = states.filter(
-    (state) =>
-      state.name
-        .toLowerCase()
-        .includes(
-          searchTerm.toLowerCase()
-        )
-  );
-
-  /* =====================================================
-     TRANSLATE RISK
-  ===================================================== */
-
-  const translateRisk = (risk) => {
-    if (risk === "High") return text.high;
-
-    if (risk === "Moderate") {
-      return text.moderate;
+  useEffect(() => {
+    if (
+      selectedRiskStateId
+    ) {
+      localStorage.setItem(
+        "sahaya-selected-risk-state",
+        selectedRiskStateId
+      );
     }
+  }, [
+    selectedRiskStateId,
+  ]);
 
-    return text.low;
-  };
+  /* =======================================================
+     SELECTED STATE
+  ======================================================= */
 
-  /* =====================================================
+  const selectedState =
+    states.find(
+      (state) =>
+        state.id ===
+        selectedStateId
+    ) || states[0];
+
+  /* =======================================================
+     REGION DIRECTORY
+     
+     THIS IS THE IMPORTANT PART.
+     
+     "All India" = all 36 states/UTs.
+  ======================================================= */
+
+  const regionStateIds =
+    regionGroups[
+      selectedRegion
+    ] ||
+    regionGroups[
+      "All India"
+    ];
+
+  const regionStates =
+    states.filter(
+      (state) =>
+        regionStateIds.includes(
+          state.id
+        )
+    );
+
+  const filteredStates =
+    regionStates.filter(
+      (state) =>
+        state.name
+          .toLowerCase()
+          .includes(
+            searchTerm
+              .toLowerCase()
+              .trim()
+          )
+    );
+
+  /* =======================================================
+     RISK ZONE
+     
+     ALWAYS ALL 36.
+     
+     It is intentionally independent from the left-side
+     region directory.
+  ======================================================= */
+
+  const riskZoneStates =
+    states;
+
+  const selectedRiskState =
+    states.find(
+      (state) =>
+        state.id ===
+        selectedRiskStateId
+    ) ||
+    selectedState ||
+    riskZoneStates[0];
+
+  const selectedRiskLiveData =
+    selectedRiskState
+      ? liveData[
+          selectedRiskState.id
+        ]
+      : null;
+
+  const selectedRiskScore =
+    selectedRiskLiveData
+      ?.riskScore ??
+    (selectedRiskLiveData
+      ? calculateRisk(
+          selectedRiskLiveData.rainfall,
+          selectedRiskLiveData.soilMoisture
+        ).score
+      : 0);
+
+  /* =======================================================
+     RISK TRANSLATION
+  ======================================================= */
+
+  const translateRisk =
+    (risk) => {
+      if (
+        risk === "High"
+      ) {
+        return text.high;
+      }
+
+      if (
+        risk === "Moderate"
+      ) {
+        return text.moderate;
+      }
+
+      if (
+        risk === "Low"
+      ) {
+        return text.low;
+      }
+
+      if (
+        risk === "Safe"
+      ) {
+        return text.safe;
+      }
+
+      return risk || "--";
+    };
+
+  /* =======================================================
+     RISK CSS CLASS
+  ======================================================= */
+
+  const getRiskClass =
+    (riskLevel) => {
+      if (
+        riskLevel === "high"
+      ) {
+        return "risk-high";
+      }
+
+      if (
+        riskLevel ===
+        "moderate"
+      ) {
+        return "risk-moderate";
+      }
+
+      if (
+        riskLevel === "low"
+      ) {
+        return "risk-low";
+      }
+
+      return "risk-moderate";
+    };
+
+  /* =======================================================
      LIVE WEATHER DATA
-  ===================================================== */
+     
+     IMPORTANT:
+     Promise.allSettled is used so one failed state
+     does not prevent the other 35 from loading.
+  ======================================================= */
 
-  const fetchLiveData = async () => {
-    try {
-      setIsRefreshing(true);
-      setError("");
+  const fetchLiveData =
+    async () => {
+      try {
+        setIsRefreshing(
+          true
+        );
 
-      const results = await Promise.all(
-        states.map(async (state) => {
-          const url =
-            "https://api.open-meteo.com/v1/forecast?" +
-            `latitude=${state.latitude}` +
-            `&longitude=${state.longitude}` +
-            "&current=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m,weather_code" +
-            "&hourly=soil_moisture_0_to_1cm,precipitation_probability" +
-            "&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weather_code" +
-            "&forecast_days=7" +
-            "&timezone=auto";
+        setError("");
 
-          const response =
-            await fetch(url);
+        const results =
+          await Promise.allSettled(
+            states.map(
+              async (state) => {
+                const url =
+                  "https://api.open-meteo.com/v1/forecast?" +
+                  `latitude=${state.latitude}` +
+                  `&longitude=${state.longitude}` +
+                  "&current=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m,weather_code" +
+                  "&hourly=soil_moisture_0_to_1cm,precipitation_probability" +
+                  "&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weather_code" +
+                  "&forecast_days=7" +
+                  "&timezone=auto";
 
-          if (!response.ok) {
-            throw new Error(
-              `Failed to fetch data for ${state.name}`
-            );
-          }
+                const response =
+                  await fetch(
+                    url
+                  );
 
-          const data =
-            await response.json();
+                if (
+                  !response.ok
+                ) {
+                  throw new Error(
+                    `Failed to fetch ${state.name}`
+                  );
+                }
 
-          const currentRainfall =
-            data.current?.precipitation ?? 0;
+                const data =
+                  await response.json();
 
-          const currentTemperature =
-            data.current?.temperature_2m ?? 0;
+                const currentRainfall =
+                  data.current
+                    ?.precipitation ??
+                  0;
 
-          const currentHumidity =
-            data.current
-              ?.relative_humidity_2m ?? 0;
+                const currentTemperature =
+                  data.current
+                    ?.temperature_2m ??
+                  0;
 
-          const currentWindSpeed =
-            data.current
-              ?.wind_speed_10m ?? 0;
+                const currentHumidity =
+                  data.current
+                    ?.relative_humidity_2m ??
+                  0;
 
-          const currentWeatherCode =
-            data.current?.weather_code ?? 0;
+                const currentWindSpeed =
+                  data.current
+                    ?.wind_speed_10m ??
+                  0;
 
-          const soilMoisture =
-            data.hourly
-              ?.soil_moisture_0_to_1cm?.[0] ??
-            0;
+                const currentWeatherCode =
+                  data.current
+                    ?.weather_code ??
+                  0;
 
-          const rainProbability =
-            data.hourly
-              ?.precipitation_probability?.[0] ??
-            0;
+                const soilMoisture =
+                  data.hourly
+                    ?.soil_moisture_0_to_1cm?.[0] ??
+                  0;
 
-          const risk = calculateRisk(
-            currentRainfall,
-            soilMoisture
+                const rainProbability =
+                  data.hourly
+                    ?.precipitation_probability?.[0] ??
+                  0;
+
+                const risk =
+                  calculateRisk(
+                    currentRainfall,
+                    soilMoisture
+                  );
+
+                const forecast =
+                  data.daily?.time?.map(
+                    (
+                      date,
+                      index
+                    ) => ({
+                      date,
+
+                      maxTemperature:
+                        data.daily
+                          ?.temperature_2m_max?.[
+                          index
+                        ] ??
+                        0,
+
+                      minTemperature:
+                        data.daily
+                          ?.temperature_2m_min?.[
+                          index
+                        ] ??
+                        0,
+
+                      rainfall:
+                        data.daily
+                          ?.precipitation_sum?.[
+                          index
+                        ] ??
+                        0,
+
+                      weatherCode:
+                        data.daily
+                          ?.weather_code?.[
+                          index
+                        ] ??
+                        0,
+                    })
+                  ) ?? [];
+
+                return {
+                  id: state.id,
+
+                  temperature:
+                    currentTemperature,
+
+                  rainfall:
+                    currentRainfall,
+
+                  humidity:
+                    currentHumidity,
+
+                  windSpeed:
+                    currentWindSpeed,
+
+                  weatherCode:
+                    currentWeatherCode,
+
+                  soilMoisture,
+
+                  rainProbability,
+
+                  overallRisk:
+                    risk.label,
+
+                  riskLevel:
+                    risk.level,
+
+                  riskScore:
+                    risk.score,
+
+                  forecast,
+                };
+              }
+            )
           );
 
-          const forecast =
-            data.daily?.time?.map(
-              (date, index) => ({
-                date,
+        const formattedData =
+          {};
 
-                maxTemperature:
-                  data.daily
-                    ?.temperature_2m_max?.[
-                    index
-                  ] ?? 0,
+        results.forEach(
+          (result) => {
+            if (
+              result.status ===
+              "fulfilled"
+            ) {
+              formattedData[
+                result.value.id
+              ] =
+                result.value;
+            } else {
+              console.warn(
+                "Weather request failed:",
+                result.reason
+              );
+            }
+          }
+        );
 
-                minTemperature:
-                  data.daily
-                    ?.temperature_2m_min?.[
-                    index
-                  ] ?? 0,
+        setLiveData(
+          formattedData
+        );
 
-                rainfall:
-                  data.daily
-                    ?.precipitation_sum?.[
-                    index
-                  ] ?? 0,
+        setLastUpdated(
+          new Date()
+        );
 
-                weatherCode:
-                  data.daily
-                    ?.weather_code?.[
-                    index
-                  ] ?? 0,
-              })
-            ) ?? [];
+        if (
+          Object.keys(
+            formattedData
+          ).length === 0
+        ) {
+          setError(
+            "Live data could not be loaded. Please check your internet connection."
+          );
+        }
+      } catch (
+        fetchError
+      ) {
+        console.error(
+          fetchError
+        );
 
-          return {
-            id: state.id,
+        setError(
+          "Live data could not be loaded. Please check your internet connection and try again."
+        );
+      } finally {
+        setIsLoading(
+          false
+        );
 
-            temperature:
-              currentTemperature,
+        setIsRefreshing(
+          false
+        );
+      }
+    };
 
-            rainfall:
-              currentRainfall,
-
-            humidity:
-              currentHumidity,
-
-            windSpeed:
-              currentWindSpeed,
-
-            weatherCode:
-              currentWeatherCode,
-
-            soilMoisture,
-
-            rainProbability,
-
-            overallRisk:
-              risk.label,
-
-            riskLevel:
-              risk.level,
-
-            forecast,
-          };
-        })
-      );
-
-      const formattedData = {};
-
-      results.forEach((result) => {
-        formattedData[result.id] =
-          result;
-      });
-
-      setLiveData(
-        formattedData
-      );
-
-      setLastUpdated(
-        new Date()
-      );
-    } catch (fetchError) {
-      console.error(fetchError);
-
-      setError(
-        "Live data could not be loaded. Please check your internet connection and try again."
-      );
-    } finally {
-      setIsLoading(false);
-      setIsRefreshing(false);
-    }
-  };
+  /* =======================================================
+     FETCH DATA ON LOAD + EVERY 15 MINUTES
+  ======================================================= */
 
   useEffect(() => {
     fetchLiveData();
@@ -1277,36 +1746,61 @@ function App() {
       );
   }, []);
 
+  /* =======================================================
+     SELECTED LIVE DATA
+  ======================================================= */
+
   const selectedLiveData =
     selectedState
-      ? liveData[selectedState.id]
+      ? liveData[
+          selectedState.id
+        ]
       : null;
 
   const forecast =
-    selectedLiveData?.forecast ?? [];
+    selectedLiveData
+      ?.forecast ?? [];
 
-  /* =====================================================
+  /* =======================================================
      CURRENT STATE
-  ===================================================== */
+  ======================================================= */
 
   const currentState =
     useMemo(() => {
-      if (!selectedState) {
+      if (
+        !selectedState
+      ) {
         return null;
       }
 
-      if (!selectedLiveData) {
+      if (
+        !selectedLiveData
+      ) {
         return {
           ...selectedState,
+
           temperature: "--",
+
           rainfall: "--",
+
           humidity: "--",
+
           windSpeed: "--",
+
           weatherCode: 0,
+
           soilMoisture: "--",
+
           rainProbability: "--",
-          overallRisk: "Waiting",
-          riskLevel: "moderate",
+
+          overallRisk:
+            "Waiting",
+
+          riskLevel:
+            "moderate",
+
+          riskScore: 0,
+
           forecast: [],
         };
       }
@@ -1320,6 +1814,10 @@ function App() {
       selectedLiveData,
     ]);
 
+  /* =======================================================
+     ADVISORIES
+  ======================================================= */
+
   const advisories =
     useMemo(
       () =>
@@ -1329,13 +1827,24 @@ function App() {
       [currentState]
     );
 
-  /* =====================================================
-     STATE FUNCTIONS
-  ===================================================== */
+  /* =======================================================
+     STATE SELECT
+     
+     NOTICE:
+     We DO NOT call setSelectedRegion here.
+     
+     This prevents selecting Nagaland, Assam, etc. from
+     unexpectedly switching the whole directory to the
+     North-Eastern Region.
+  ======================================================= */
 
   const handleStateSelect =
     (state) => {
       setSelectedStateId(
+        state.id
+      );
+
+      setSelectedRiskStateId(
         state.id
       );
 
@@ -1344,9 +1853,88 @@ function App() {
       );
     };
 
+  /* =======================================================
+     REGION CHANGE
+  ======================================================= */
+
+  const handleRegionChange =
+    (event) => {
+      const nextRegion =
+        event.target.value;
+
+      setSelectedRegion(
+        nextRegion
+      );
+
+      setSearchTerm("");
+
+      const availableStateIds =
+        regionGroups[
+          nextRegion
+        ] ||
+        regionGroups[
+          "All India"
+        ];
+
+      /*
+       If the currently selected state isn't in the
+       newly selected region, select the first state
+       of that region.
+
+       This is only done when the USER changes the region.
+      */
+
+      if (
+        !availableStateIds.includes(
+          selectedStateId
+        )
+      ) {
+        const nextState =
+          states.find(
+            (state) =>
+              availableStateIds.includes(
+                state.id
+              )
+          );
+
+        if (
+          nextState
+        ) {
+          setSelectedStateId(
+            nextState.id
+          );
+        }
+
+        setShowFullAnalysis(
+          false
+        );
+      }
+    };
+
+  /* =======================================================
+     SHOW ALL STATES
+  ======================================================= */
+
+  const handleShowAllStates =
+    () => {
+      setSelectedRegion(
+        "All India"
+      );
+
+      setSearchTerm("");
+    };
+
+  /* =======================================================
+     FULL ANALYSIS
+  ======================================================= */
+
   const handleFullAnalysis =
     (state) => {
       setSelectedStateId(
+        state.id
+      );
+
+      setSelectedRiskStateId(
         state.id
       );
 
@@ -1366,31 +1954,17 @@ function App() {
       }, 100);
     };
 
-  const getRiskClass =
-    (riskLevel) => {
-      if (
-        riskLevel === "high"
-      )
-        return "risk-high";
-
-      if (
-        riskLevel ===
-        "moderate"
-      )
-        return "risk-moderate";
-
-      if (
-        riskLevel === "low"
-      )
-        return "risk-low";
-
-      return "risk-moderate";
-    };
+  /* =======================================================
+     LAST UPDATED
+  ======================================================= */
 
   const formatLastUpdated =
     () => {
-      if (!lastUpdated)
+      if (
+        !lastUpdated
+      ) {
         return "Not updated yet";
+      }
 
       return lastUpdated.toLocaleTimeString(
         [],
@@ -1401,9 +1975,9 @@ function App() {
       );
     };
 
-  /* =====================================================
-     INCIDENT FORM
-  ===================================================== */
+  /* =======================================================
+     INCIDENT FORM CHANGE
+  ======================================================= */
 
   const handleIncidentFormChange =
     (event) => {
@@ -1416,12 +1990,17 @@ function App() {
       setIncidentForm(
         (previous) => ({
           ...previous,
+
           [name]: files
             ? files[0]
             : value,
         })
       );
     };
+
+  /* =======================================================
+     INCIDENT SUBMIT
+  ======================================================= */
 
   const handleIncidentSubmit =
     (event) => {
@@ -1433,6 +2012,7 @@ function App() {
         alert(
           text.enterDescription
         );
+
         return;
       }
 
@@ -1442,6 +2022,7 @@ function App() {
         alert(
           text.enterLocation
         );
+
         return;
       }
 
@@ -1492,8 +2073,7 @@ function App() {
         type: "Road crack",
         description: "",
         location: "",
-        severity:
-          "Moderate",
+        severity: "Moderate",
         photograph: null,
       });
 
@@ -1506,9 +2086,9 @@ function App() {
       );
     };
 
-  /* =====================================================
-     FIELD OFFICER FUNCTIONS
-  ===================================================== */
+  /* =======================================================
+     OFFICER STATUS UPDATE
+  ======================================================= */
 
   const updateIncidentStatus =
     (
@@ -1531,6 +2111,10 @@ function App() {
       );
     };
 
+  /* =======================================================
+     OFFICER NOTE
+  ======================================================= */
+
   const updateOfficerNote =
     (
       reportId,
@@ -1551,6 +2135,34 @@ function App() {
           )
       );
     };
+
+  /* =======================================================
+     FORECAST CHART DATA
+  ======================================================= */
+
+  const forecastChartData =
+    forecast.map(
+      (day, index) => ({
+        ...day,
+
+        label:
+          index === 0
+            ? text.today
+            : new Date(
+                day.date
+              ).toLocaleDateString(
+                "en-IN",
+                {
+                  weekday:
+                    "short",
+                }
+              ),
+      })
+    );
+
+  /* =======================================================
+     RENDER
+  ======================================================= */
 
   return (
     <div className="app-shell">
@@ -1616,7 +2228,7 @@ function App() {
           <span className="status-dot"></span>
 
           <span>
-            Live monitoring mode
+            {text.liveMonitoring}
           </span>
 
         </div>
@@ -1646,10 +2258,12 @@ function App() {
             </h2>
 
             <p>
-              Sahaya Land provides a live environmental
-              overview of conditions and potential risks
-              across the eight states of India's North
-              Eastern Region.
+              Sahaya Land provides a live
+              environmental overview of
+              conditions and potential risks
+              across India, with detailed
+              monitoring for every state and
+              Union Territory.
             </p>
 
           </div>
@@ -1665,40 +2279,16 @@ function App() {
             <div className="visual-center">
 
               <span className="visual-center-label">
-                NER
+                INDIA
               </span>
 
               <strong>
-                08
+                {states.length}
               </strong>
 
               <small>
-                States monitored
+                States &amp; UTs
               </small>
-
-            </div>
-
-            <div className="floating-stat stat-one">
-
-              <span>
-                Live region view
-              </span>
-
-              <strong>
-                North East India
-              </strong>
-
-            </div>
-
-            <div className="floating-stat stat-two">
-
-              <span>
-                Refresh interval
-              </span>
-
-              <strong>
-                15 minutes
-              </strong>
 
             </div>
 
@@ -1707,17 +2297,16 @@ function App() {
         </section>
 
         {/* =================================================
-            NOTICE
+            LIVE NOTICE
         ================================================= */}
 
-        <section className="notice-bar">
+        <section className="live-notice">
 
-          <div className="notice-icon">
+          <div className="live-notice-icon">
             i
           </div>
 
           <div>
-
             <strong>
               {text.liveNotice}
             </strong>
@@ -1725,20 +2314,77 @@ function App() {
             <p>
               {text.liveNoticeText}
             </p>
+          </div>
+
+        </section>
+
+        {/* =================================================
+            COMMUNITY SAFETY
+        ================================================= */}
+
+        <section className="community-safety">
+
+          <div>
+
+            <span className="eyebrow">
+              {text.communitySafety}
+            </span>
+
+            <h2>
+              {text.seeUnusual}
+            </h2>
+
+            <p>
+              {text.reportDescription}
+            </p>
+
+          </div>
+
+          <div className="community-actions">
+
+            <button
+              className="primary-button"
+              onClick={() =>
+                setShowIncidentForm(
+                  true
+                )
+              }
+            >
+              +{" "}
+              {text.reportIncident}
+            </button>
+
+            <button
+              className="secondary-button"
+              onClick={() =>
+                setShowOfficerDashboard(
+                  (previous) =>
+                    !previous
+                )
+              }
+            >
+              {showOfficerDashboard
+                ? text.hideOfficerDashboard
+                : text.fieldOfficerDashboard}
+            </button>
 
           </div>
 
         </section>
 
         {/* =================================================
-            DASHBOARD
+            MAIN DASHBOARD GRID
         ================================================= */}
 
-        <section className="dashboard-layout">
+        <div className="dashboard-layout">
 
-          <aside className="state-sidebar">
+          {/* =================================================
+              LEFT - REGION DIRECTORY
+          ================================================= */}
 
-            <div className="section-heading">
+          <aside className="region-directory">
+
+            <div className="directory-header">
 
               <div>
 
@@ -1752,13 +2398,46 @@ function App() {
 
               </div>
 
-              <span className="state-count">
-                {states.length}
+              <span className="directory-count">
+                {filteredStates.length}
               </span>
 
             </div>
 
-            <div className="search-box">
+            {/* REGION SELECTOR */}
+
+            <div className="directory-region-selector">
+
+              <label htmlFor="region-select">
+                Region
+              </label>
+
+              <select
+                id="region-select"
+                value={selectedRegion}
+                onChange={
+                  handleRegionChange
+                }
+              >
+
+                {regionOptions.map(
+                  (region) => (
+                    <option
+                      key={region}
+                      value={region}
+                    >
+                      {region}
+                    </option>
+                  )
+                )}
+
+              </select>
+
+            </div>
+
+            {/* SEARCH */}
+
+            <div className="state-search">
 
               <span>
                 ⌕
@@ -1766,46 +2445,71 @@ function App() {
 
               <input
                 type="text"
-                placeholder={
-                  text.searchStates
-                }
                 value={searchTerm}
                 onChange={(event) =>
                   setSearchTerm(
                     event.target.value
                   )
                 }
+                placeholder={
+                  text.searchStates
+                }
               />
 
             </div>
 
+            {/* SHOW ALL BUTTON */}
+
+            {selectedRegion !==
+              "All India" && (
+              <button
+                type="button"
+                className="show-all-states-button"
+                onClick={
+                  handleShowAllStates
+                }
+              >
+                Show all 36 States &amp; UTs
+              </button>
+            )}
+
+            {/* STATE LIST */}
+
             <div className="state-list">
 
-              {filteredStates.map(
-                (state) => {
+              {filteredStates.length ===
+              0 ? (
+                <div className="no-states">
+                  {text.noStates}
+                </div>
+              ) : (
+                filteredStates.map(
+                  (state) => {
 
-                  const stateLiveData =
-                    liveData[
-                      state.id
-                    ];
-
-                  return (
-                    <button
-                      key={state.id}
-                      className={`state-list-item ${
-                        selectedState?.id ===
+                    const stateData =
+                      liveData[
                         state.id
-                          ? "active"
-                          : ""
-                      }`}
-                      onClick={() =>
-                        handleStateSelect(
-                          state
-                        )
-                      }
-                    >
+                      ];
 
-                      <div className="state-list-main">
+                    const isSelected =
+                      selectedState?.id ===
+                      state.id;
+
+                    return (
+                      <button
+                        key={state.id}
+                        type="button"
+                        className={`state-list-item ${
+                          isSelected
+                            ? "selected"
+                            : ""
+                        }`}
+                        onClick={() =>
+                          handleStateSelect(
+                            state
+                          )
+                        }
+                      >
 
                         <span className="state-initial">
                           {state.name.charAt(
@@ -1813,58 +2517,124 @@ function App() {
                           )}
                         </span>
 
-                        <div>
+                        <span className="state-info">
 
                           <strong>
                             {state.name}
                           </strong>
 
                           <small>
-                            {stateLiveData?.temperature ??
-                              "--"}
-                            °C
+                            {stateData
+                              ? `${Number(
+                                  stateData.temperature
+                                ).toFixed(
+                                  1
+                                )}°C`
+                              : "--"}
                           </small>
 
-                        </div>
+                        </span>
 
-                      </div>
+                        <span
+                          className={`state-status-dot ${
+                            stateData
+                              ? getRiskClass(
+                                  stateData.riskLevel
+                                )
+                              : ""
+                          }`}
+                        ></span>
 
-                      <span
-                        className={`mini-risk-dot ${getRiskClass(
-                          stateLiveData?.riskLevel
-                        )}`}
-                      ></span>
-
-                    </button>
-                  );
-                }
-              )}
-
-              {filteredStates.length ===
-                0 && (
-                <div className="empty-state">
-                  {text.noStates}
-                </div>
+                      </button>
+                    );
+                  }
+                )
               )}
 
             </div>
 
           </aside>
 
-          <section className="main-dashboard">
+          {/* =================================================
+              RIGHT CONTENT
+          ================================================= */}
 
-            {!selectedState ? (
+          <div className="dashboard-content">
 
-              <div className="welcome-card">
+            {/* =================================================
+                SELECTED REGION
+            ================================================= */}
 
-                <div className="welcome-icon">
-                  🌏
+            {currentState ? (
+              <section className="selected-region-card">
+
+                <div className="selected-region-main">
+
+                  <span className="eyebrow">
+                    {text.selectedRegion}
+                  </span>
+
+                  <h1>
+                    {currentState.name}
+                  </h1>
+
+                  <p className="selected-location">
+                    {currentState.capital}
+                    {" • "}
+                    {currentState.region}
+                  </p>
+
+                  <p className="selected-description">
+                    {currentState.description}
+                  </p>
+
+                  <button
+                    className="primary-button"
+                    onClick={() =>
+                      handleFullAnalysis(
+                        currentState
+                      )
+                    }
+                  >
+                    View full analysis
+                    <span>
+                      →
+                    </span>
+                  </button>
+
                 </div>
 
-                <span className="eyebrow">
-                  SAHAYA LAND
-                </span>
+                <div className="selected-risk-summary">
 
+                  <span>
+                    {text.estimatedRisk}
+                  </span>
+
+                  <strong
+                    className={getRiskClass(
+                      currentState.riskLevel
+                    )}
+                  >
+                    {currentState.overallRisk ===
+                    "Waiting"
+                      ? text.waiting
+                      : translateRisk(
+                          currentState.overallRisk
+                        )}
+                  </strong>
+
+                  {selectedLiveData && (
+                    <small>
+                      {selectedLiveData.riskScore}
+                      /100
+                    </small>
+                  )}
+
+                </div>
+
+              </section>
+            ) : (
+              <section className="empty-state">
                 <h2>
                   {text.chooseStateBegin}
                 </h2>
@@ -1872,1706 +2642,1660 @@ function App() {
                 <p>
                   {text.selectStateDescription}
                 </p>
+              </section>
+            )}
 
-                <div className="welcome-hint">
+            {/* =================================================
+                LIVE STATUS BAR
+            ================================================= */}
+
+            <div className="live-data-bar">
+
+              <div className="live-data-status">
+
+                <span className="status-dot"></span>
+
+                <strong>
+                  {text.liveEnvironmentalData}
+                </strong>
+
+              </div>
+
+              <span>
+                {text.lastUpdated}:{" "}
+                {formatLastUpdated()}
+              </span>
+
+              <button
+                type="button"
+                onClick={
+                  fetchLiveData
+                }
+                disabled={
+                  isRefreshing
+                }
+              >
+                {isRefreshing
+                  ? "Refreshing..."
+                  : text.refreshData}
+              </button>
+
+            </div>
+
+            {/* ERROR */}
+
+            {error && (
+              <div className="error-message">
+                {error}
+              </div>
+            )}
+
+            {/* =================================================
+                METRIC CARDS
+            ================================================= */}
+
+            {currentState && (
+              <section className="metric-grid">
+
+                <div className="metric-card">
+
+                  <div className="metric-card-header">
+                    <span>
+                      TEMPERATURE
+                    </span>
+
+                    <span>
+                      °
+                    </span>
+                  </div>
+
+                  <strong>
+                    {currentState.temperature}
+                    <small>
+                      °C
+                    </small>
+                  </strong>
+
+                  <p>
+                    {text.currentTemperature}
+                  </p>
+
+                </div>
+
+                <div className="metric-card">
+
+                  <div className="metric-card-header">
+                    <span>
+                      SOIL MOISTURE
+                    </span>
+
+                    <span>
+                      ◌
+                    </span>
+                  </div>
+
+                  <strong>
+                    {selectedLiveData
+                      ? (
+                          Number(
+                            currentState.soilMoisture
+                          ) * 100
+                        ).toFixed(
+                          0
+                        )
+                      : "--"}
+                    <small>
+                      %
+                    </small>
+                  </strong>
+
+                  <div className="metric-progress">
+
+                    <span
+                      style={{
+                        width: `${
+                          selectedLiveData
+                            ? Math.min(
+                                Math.max(
+                                  Number(
+                                    currentState.soilMoisture
+                                  ) *
+                                    100,
+                                  0
+                                ),
+                                100
+                              )
+                            : 0
+                        }%`,
+                      }}
+                    ></span>
+
+                  </div>
+
+                  <p>
+                    {text.soilEstimate}
+                  </p>
+
+                </div>
+
+                <div className="metric-card">
+
+                  <div className="metric-card-header">
+                    <span>
+                      RAINFALL
+                    </span>
+
+                    <span>
+                      ≋
+                    </span>
+                  </div>
+
+                  <strong>
+                    {currentState.rainfall}
+                    <small>
+                      mm
+                    </small>
+                  </strong>
+
+                  <p>
+                    {text.currentRainfall}
+                  </p>
+
+                </div>
+
+                <div className="metric-card">
+
+                  <div className="metric-card-header">
+                    <span>
+                      OVERALL RISK
+                    </span>
+
+                    <span>
+                      ◈
+                    </span>
+                  </div>
+
+                  <strong
+                    className={getRiskClass(
+                      currentState.riskLevel
+                    )}
+                  >
+                    {currentState.overallRisk ===
+                    "Waiting"
+                      ? text.waiting
+                      : translateRisk(
+                          currentState.overallRisk
+                        )}
+                  </strong>
+
+                  <p>
+                    {selectedLiveData
+                      ? `${text.riskScore}: ${selectedLiveData.riskScore}/100`
+                      : text.estimatedIndicators}
+                  </p>
+
+                </div>
+
+              </section>
+            )}
+
+            {/* =================================================
+                CURRENT WEATHER
+            ================================================= */}
+
+            {currentState &&
+              selectedLiveData && (
+                <section className="weather-current-card">
+
+                  <div className="weather-current-main">
+
+                    <span className="eyebrow">
+                      {text.currentWeather}
+                    </span>
+
+                    <div className="weather-current-value">
+
+                      <span className="weather-icon">
+                        {getWeatherIcon(
+                          currentState.weatherCode
+                        )}
+                      </span>
+
+                      <div>
+
+                        <strong>
+                          {currentState.temperature}
+                          °C
+                        </strong>
+
+                        <p>
+                          {getWeatherDescription(
+                            currentState.weatherCode
+                          )}
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div className="weather-current-details">
+
+                    <div>
+                      <span>
+                        {text.rainProbability}
+                      </span>
+
+                      <strong>
+                        {currentState.rainProbability}
+                        %
+                      </strong>
+                    </div>
+
+                    <div>
+                      <span>
+                        {text.humidity}
+                      </span>
+
+                      <strong>
+                        {currentState.humidity}
+                        %
+                      </strong>
+                    </div>
+
+                    <div>
+                      <span>
+                        {text.windSpeed}
+                      </span>
+
+                      <strong>
+                        {currentState.windSpeed}
+                        {" "}
+                        km/h
+                      </strong>
+                    </div>
+
+                  </div>
+
+                </section>
+              )}
+
+            {/* =================================================
+                WEATHER OUTLOOK
+            ================================================= */}
+
+            <section className="forecast-section">
+
+              <div className="section-heading">
+
+                <div>
+                  <span className="eyebrow">
+                    {text.weatherOutlook}
+                  </span>
+
+                  <h2>
+                    {text.sevenDayForecast}
+                  </h2>
+                </div>
+
+              </div>
+
+              {isLoading ? (
+                <div className="loading-card">
+                  {text.forecastLoading}
+                </div>
+              ) : forecast.length ===
+                0 ? (
+                <div className="loading-card">
+                  {text.forecastUnavailable}
+                </div>
+              ) : (
+                <div className="forecast-grid">
+
+                  {forecast.map(
+                    (
+                      day,
+                      index
+                    ) => (
+                      <div
+                        className="forecast-card"
+                        key={`${day.date}-${index}`}
+                      >
+
+                        <span>
+                          {index ===
+                          0
+                            ? text.today
+                            : new Date(
+                                day.date
+                              ).toLocaleDateString(
+                                "en-IN",
+                                {
+                                  weekday:
+                                    "short",
+                                }
+                              )}
+                        </span>
+
+                        <strong>
+                          {getWeatherIcon(
+                            day.weatherCode
+                          )}
+                        </strong>
+
+                        <b>
+                          {Math.round(
+                            day.maxTemperature
+                          )}
+                          °
+                        </b>
+
+                        <small>
+                          {Math.round(
+                            day.minTemperature
+                          )}
+                          °
+                        </small>
+
+                        <em>
+                          {day.rainfall.toFixed(
+                            1
+                          )}{" "}
+                          mm
+                        </em>
+
+                      </div>
+                    )
+                  )}
+
+                </div>
+              )}
+
+            </section>
+
+            {/* =================================================
+                VISUAL INSIGHTS
+            ================================================= */}
+
+            <section className="charts-section">
+
+              <div className="section-heading">
+
+                <div>
+
+                  <span className="eyebrow">
+                    {text.visualInsights}
+                  </span>
+
+                  <h2>
+                    {text.weatherTrends}
+                  </h2>
+
+                </div>
+
+              </div>
+
+              <div className="charts-grid">
+
+                <div className="chart-card">
+
+                  <div className="chart-header">
+
+                    <div>
+
+                      <h3>
+                        {text.temperatureTrend}
+                      </h3>
+
+                      <p>
+                        {text.temperatureDescription}
+                      </p>
+
+                    </div>
+
+                  </div>
+
+                  <div className="chart-container">
+
+                    <ResponsiveContainer
+                      width="100%"
+                      height={280}
+                    >
+
+                      <LineChart
+                        data={
+                          forecastChartData
+                        }
+                      >
+
+                        <CartesianGrid
+                          strokeDasharray="3 3"
+                        />
+
+                        <XAxis
+                          dataKey="label"
+                        />
+
+                        <YAxis />
+
+                        <Tooltip />
+
+                        <Line
+                          type="monotone"
+                          dataKey="maxTemperature"
+                          name="Maximum"
+                          stroke="#1d4ed8"
+                          strokeWidth={3}
+                          dot={{
+                            r: 4,
+                          }}
+                        />
+
+                        <Line
+                          type="monotone"
+                          dataKey="minTemperature"
+                          name="Minimum"
+                          stroke="#60a5fa"
+                          strokeWidth={2}
+                          dot={{
+                            r: 3,
+                          }}
+                        />
+
+                      </LineChart>
+
+                    </ResponsiveContainer>
+
+                  </div>
+
+                </div>
+
+                <div className="chart-card">
+
+                  <div className="chart-header">
+
+                    <div>
+
+                      <h3>
+                        {text.rainfallForecast}
+                      </h3>
+
+                      <p>
+                        {text.rainfallDescription}
+                      </p>
+
+                    </div>
+
+                  </div>
+
+                  <div className="chart-container">
+
+                    <ResponsiveContainer
+                      width="100%"
+                      height={280}
+                    >
+
+                      <BarChart
+                        data={
+                          forecastChartData
+                        }
+                      >
+
+                        <CartesianGrid
+                          strokeDasharray="3 3"
+                        />
+
+                        <XAxis
+                          dataKey="label"
+                        />
+
+                        <YAxis />
+
+                        <Tooltip
+                          formatter={(
+                            value
+                          ) => [
+                            `${value} mm`,
+                            text.rain,
+                          ]}
+                        />
+
+                        <Bar
+                          dataKey="rainfall"
+                          name={text.rain}
+                          fill="#0ea5e9"
+                          radius={[
+                            8,
+                            8,
+                            0,
+                            0,
+                          ]}
+                        />
+
+                      </BarChart>
+
+                    </ResponsiveContainer>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </section>
+
+            {/* =================================================
+                ALERTS
+            ================================================= */}
+
+            <section className="alerts-section">
+
+              <div className="section-heading alerts-heading">
+
+                <div>
+
+                  <span className="eyebrow">
+                    {text.advisories}
+                  </span>
+
+                  <h2>
+                    {text.emergencyAlerts}
+                  </h2>
+
+                </div>
+
+                <button
+                  className="alerts-toggle-button"
+                  onClick={() =>
+                    setShowAlerts(
+                      (previous) =>
+                        !previous
+                    )
+                  }
+                >
+                  {showAlerts
+                    ? text.hideAlerts
+                    : text.showAlerts}
+                </button>
+
+              </div>
+
+              <div className="alerts-notice">
+
+                <span className="alerts-notice-icon">
+                  i
+                </span>
+
+                <p>
+                  {text.advisoryNotice}
+                </p>
+
+              </div>
+
+              {showAlerts && (
+                <div className="alerts-list">
+
+                  {advisories.length ===
+                  0 ? (
+                    <div className="alert-empty">
+                      {text.alertsUnavailable}
+                    </div>
+                  ) : (
+                    advisories.map(
+                      (
+                        advisory,
+                        index
+                      ) => (
+                        <div
+                          className={`alert-card alert-${advisory.level}`}
+                          key={`${advisory.title}-${index}`}
+                        >
+
+                          <div className="alert-card-icon">
+                            {advisory.level ===
+                            "low"
+                              ? "✓"
+                              : "!"}
+                          </div>
+
+                          <div className="alert-card-content">
+
+                            <div className="alert-card-top">
+
+                              <strong>
+                                {
+                                  advisory.title
+                                }
+                              </strong>
+
+                              <span className="alert-level">
+
+                                {advisory.level ===
+                                "high"
+                                  ? text.high
+                                  : advisory.level ===
+                                    "moderate"
+                                  ? text.moderate
+                                  : text.low}
+
+                              </span>
+
+                            </div>
+
+                            <p>
+                              {
+                                advisory.message
+                              }
+                            </p>
+
+                            <small>
+
+                              <strong>
+                                {
+                                  text.suggestedAction
+                                }
+                                :
+                              </strong>{" "}
+
+                              {
+                                advisory.action
+                              }
+
+                            </small>
+
+                          </div>
+
+                        </div>
+                      )
+                    )
+                  )}
+
+                </div>
+              )}
+
+            </section>
+
+            {/* =================================================
+                RISK ZONE
+            ================================================= */}
+
+            <section
+              className="risk-zone-section"
+              id="risk-zone-section"
+            >
+
+              <div className="section-heading">
+
+                <div>
+
+                  <span className="eyebrow">
+                    {text.riskZone}
+                  </span>
+
+                  <h2>
+                    {text.riskZoneTitle}
+                  </h2>
+
+                  <p>
+                    {text.riskZoneDescription}
+                  </p>
+
+                </div>
+
+                <div className="risk-zone-controls">
+
+                  <label htmlFor="risk-zone-select">
+                    {text.selectRiskState}
+                  </label>
+
+                  <select
+                    id="risk-zone-select"
+                    className="state-selector"
+                    value={
+                      selectedRiskState?.id ||
+                      ""
+                    }
+                    onChange={(
+                      event
+                    ) =>
+                      setSelectedRiskStateId(
+                        event.target
+                          .value
+                      )
+                    }
+                  >
+
+                    {riskZoneStates.map(
+                      (
+                        state
+                      ) => (
+                        <option
+                          key={
+                            state.id
+                          }
+                          value={
+                            state.id
+                          }
+                        >
+                          {state.name}
+                        </option>
+                      )
+                    )}
+
+                  </select>
+
+                </div>
+
+              </div>
+
+              {/* IMPORTANT:
+                  This maps over riskZoneStates = ALL 36.
+              */}
+
+              <div className="risk-zone-grid">
+
+                {riskZoneStates.map(
+                  (state) => {
+
+                    const stateData =
+                      liveData[
+                        state.id
+                      ];
+
+                    const risk =
+                      stateData
+                        ? {
+                            label:
+                              stateData.overallRisk,
+
+                            level:
+                              stateData.riskLevel,
+
+                            score:
+                              stateData.riskScore ??
+                              calculateRisk(
+                                stateData.rainfall,
+                                stateData.soilMoisture
+                              ).score,
+                          }
+                        : {
+                            label:
+                              "Waiting",
+
+                            level:
+                              "moderate",
+
+                            score: 0,
+                          };
+
+                    const isSelected =
+                      selectedRiskState?.id ===
+                      state.id;
+
+                    return (
+                      <button
+                        key={
+                          state.id
+                        }
+                        type="button"
+                        className={`risk-zone-card ${
+                          isSelected
+                            ? "selected"
+                            : ""
+                        }`}
+                        onClick={() => {
+
+                          setSelectedRiskStateId(
+                            state.id
+                          );
+
+                          setSelectedStateId(
+                            state.id
+                          );
+
+                        }}
+                      >
+
+                        <div className="risk-zone-card-top">
+
+                          <div>
+
+                            <strong>
+                              {state.name}
+                            </strong>
+
+                            <span>
+                              {state.region}
+                            </span>
+
+                          </div>
+
+                          <span
+                            className={`risk-badge ${getRiskClass(
+                              risk.level
+                            )}`}
+                          >
+                            {risk.label ===
+                            "Waiting"
+                              ? text.waiting
+                              : translateRisk(
+                                  risk.label
+                                )}
+                          </span>
+
+                        </div>
+
+                        <div className="risk-progress">
+
+                          <div
+                            className="risk-progress-bar"
+                            style={{
+                              width: `${risk.score}%`,
+                            }}
+                          ></div>
+
+                        </div>
+
+                        <div className="risk-zone-card-bottom">
+
+                          <span>
+                            {text.riskScore}
+                          </span>
+
+                          <strong>
+                            {stateData
+                              ? `${risk.score}/100`
+                              : "--"}
+                          </strong>
+
+                        </div>
+
+                      </button>
+                    );
+                  }
+                )}
+
+              </div>
+
+              {/* SELECTED RISK */}
+
+              {selectedRiskState && (
+                <div className="selected-risk-zone">
+
+                  <div className="selected-risk-zone-main">
+
+                    <span className="eyebrow">
+                      {text.liveRisk}
+                    </span>
+
+                    <h3>
+                      {
+                        selectedRiskState.name
+                      }
+                    </h3>
+
+                    <p>
+                      {
+                        selectedRiskState.description
+                      }
+                    </p>
+
+                  </div>
+
+                  <div className="selected-risk-metrics">
+
+                    <div>
+
+                      <span>
+                        {text.overallRisk}
+                      </span>
+
+                      <strong
+                        className={getRiskClass(
+                          selectedRiskLiveData
+                            ?.riskLevel
+                        )}
+                      >
+                        {selectedRiskLiveData
+                          ? translateRisk(
+                              selectedRiskLiveData.overallRisk
+                            )
+                          : "--"}
+                      </strong>
+
+                    </div>
+
+                    <div>
+
+                      <span>
+                        {text.riskScore}
+                      </span>
+
+                      <strong>
+                        {selectedRiskLiveData
+                          ? `${selectedRiskScore}/100`
+                          : "--"}
+                      </strong>
+
+                    </div>
+
+                    <div>
+
+                      <span>
+                        {text.temperature}
+                      </span>
+
+                      <strong>
+                        {selectedRiskLiveData
+                          ? `${selectedRiskLiveData.temperature}°C`
+                          : "--"}
+                      </strong>
+
+                    </div>
+
+                    <div>
+
+                      <span>
+                        {text.rainfall}
+                      </span>
+
+                      <strong>
+                        {selectedRiskLiveData
+                          ? `${selectedRiskLiveData.rainfall} mm`
+                          : "--"}
+                      </strong>
+
+                    </div>
+
+                  </div>
+
+                  <small>
+                    {text.riskNotOfficial}
+                  </small>
+
+                </div>
+              )}
+
+            </section>
+
+            {/* =================================================
+                INTERACTIVE MAP
+            ================================================= */}
+
+            <section
+              className="map-section"
+              id="map-section"
+            >
+
+              <div className="section-heading map-heading">
+
+                <div>
+
+                  <span className="eyebrow">
+                    {text.interactiveMap}
+                  </span>
+
+                  <h2>
+                    {text.northEasternRegion}
+                  </h2>
+
+                </div>
+
+                <div className="map-legend">
 
                   <span>
-                    ←
+                    <i className="legend-dot low"></i>
+                    {text.low}
                   </span>
 
                   <span>
-                    {text.selectAnyState}
+                    <i className="legend-dot moderate"></i>
+                    {text.moderate}
+                  </span>
+
+                  <span>
+                    <i className="legend-dot high"></i>
+                    {text.high}
                   </span>
 
                 </div>
 
               </div>
 
-            ) : (
+              <div className="map-wrapper">
 
-              <>
+                <MapContainer
+                  center={
+                    selectedState.coordinates
+                  }
+                  zoom={5}
+                  scrollWheelZoom={
+                    true
+                  }
+                  className="leaflet-map"
+                >
 
-                {/* =================================================
-                    CITIZEN INCIDENT REPORTING
-                ================================================= */}
+                  <TileLayer
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  />
 
-                <div className="incident-action-bar">
-
-                  <div>
-
-                    <span className="eyebrow">
-                      {text.communitySafety}
-                    </span>
-
-                    <h3>
-                      {text.seeUnusual}
-                    </h3>
-
-                    <p>
-                      {text.reportDescription}
-                    </p>
-
-                  </div>
-
-                  <button
-                    className="report-incident-button"
-                    onClick={() =>
-                      setShowIncidentForm(
-                        true
-                      )
+                  <MapController
+                    selectedState={
+                      selectedState
                     }
-                  >
-                    + {text.reportIncident}
-                  </button>
+                  />
 
-                  <button
-                    className="officer-dashboard-button"
-                    onClick={() =>
-                      setShowOfficerDashboard(
-                        (previous) =>
-                          !previous
-                      )
-                    }
-                  >
-                    {showOfficerDashboard
-                      ? text.hideOfficerDashboard
-                      : text.fieldOfficerDashboard}
-                  </button>
+                  {/* ALL 36 STATES + UTs ON MAP */}
 
-                </div>
+                  {states.map(
+                    (state) => {
 
-                {/* =================================================
-                    CITIZEN REPORT LIST
-                ================================================= */}
+                      const stateLiveData =
+                        liveData[
+                          state.id
+                        ];
 
-                {incidentReports.length >
-                  0 && (
+                      const riskLevel =
+                        stateLiveData?.riskLevel;
 
-                  <section className="incident-reports-section">
+                      const color =
+                        riskLevel ===
+                        "high"
+                          ? "#ef4444"
+                          : riskLevel ===
+                            "moderate"
+                          ? "#f59e0b"
+                          : riskLevel ===
+                            "low"
+                          ? "#eab308"
+                          : "#22c55e";
 
-                    <div className="section-heading">
+                      const isSelected =
+                        selectedState?.id ===
+                        state.id;
 
-                      <div>
+                      return (
+                        <CircleMarker
+                          key={
+                            state.id
+                          }
+                          center={
+                            state.coordinates
+                          }
+                          radius={
+                            isSelected
+                              ? 12
+                              : 8
+                          }
+                          pathOptions={{
+                            color:
+                              isSelected
+                                ? "#111827"
+                                : color,
 
-                        <span className="eyebrow">
-                          {text.communityReports}
-                        </span>
+                            fillColor:
+                              color,
 
-                        <h2>
-                          {text.recentReports}
-                        </h2>
+                            fillOpacity:
+                              0.8,
 
-                      </div>
+                            weight:
+                              isSelected
+                                ? 4
+                                : 2,
+                          }}
+                          eventHandlers={{
+                            click: () =>
+                              handleStateSelect(
+                                state
+                              ),
+                          }}
+                        >
 
-                      <span className="state-count">
-                        {
-                          incidentReports.length
-                        }
-                      </span>
+                          <Popup>
 
-                    </div>
+                            <div className="map-popup">
 
-                    <div className="incident-reports-list">
-
-                      {incidentReports.map(
-                        (report) => (
-
-                          <div
-                            className="incident-report-card"
-                            key={report.id}
-                          >
-
-                            <div className="incident-report-main">
-
-                              <div className="incident-report-icon">
-                                !
-                              </div>
-
-                              <div>
-
-                                <div className="incident-report-title">
-
-                                  <strong>
-                                    {report.type}
-                                  </strong>
-
-                                  <span className="incident-status">
-                                    {report.status}
-                                  </span>
-
-                                </div>
-
-                                <p>
-                                  {
-                                    report.description
-                                  }
-                                </p>
-
-                                <div className="incident-report-meta">
-
-                                  <span>
-                                    📍{" "}
-                                    {
-                                      report.location
-                                    }
-                                  </span>
-
-                                  <span>
-                                    •
-                                  </span>
-
-                                  <span>
-                                    {
-                                      report.severity
-                                    }{" "}
-                                    severity
-                                  </span>
-
-                                  <span>
-                                    •
-                                  </span>
-
-                                  <span>
-                                    {
-                                      report.submittedAt
-                                    }
-                                  </span>
-
-                                </div>
-
-                                {report.actionTaken && (
-
-                                  <div className="incident-action-taken">
-
-                                    <strong>
-                                      {text.actionTaken}:
-                                    </strong>{" "}
-
-                                    {
-                                      report.actionTaken
-                                    }
-
-                                  </div>
-
-                                )}
-
-                              </div>
-
-                            </div>
-
-                            {report.photograph && (
-
-                              <img
-                                className="incident-report-image"
-                                src={
-                                  report.photograph
+                              <strong>
+                                {
+                                  state.name
                                 }
-                                alt="Uploaded incident"
-                              />
+                              </strong>
 
-                            )}
+                              <span>
+                                {
+                                  state.capital
+                                }
+                              </span>
 
-                          </div>
+                              <small>
+                                Temperature:{" "}
+                                {
+                                  stateLiveData
+                                    ?.temperature ??
+                                  "--"
+                                }
+                                °C
+                              </small>
 
-                        )
-                      )}
+                              <small>
+                                Weather:{" "}
+                                {stateLiveData
+                                  ? getWeatherDescription(
+                                      stateLiveData.weatherCode
+                                    )
+                                  : "--"}
+                              </small>
 
-                    </div>
+                              <small>
+                                Rainfall:{" "}
+                                {
+                                  stateLiveData
+                                    ?.rainfall ??
+                                  "--"
+                                }{" "}
+                                mm
+                              </small>
 
-                  </section>
+                              <small>
+                                Rain probability:{" "}
+                                {
+                                  stateLiveData
+                                    ?.rainProbability ??
+                                  "--"
+                                }
+                                %
+                              </small>
 
-                )}
-
-                {/* =================================================
-                    FIELD OFFICER DASHBOARD
-                ================================================= */}
-
-                {showOfficerDashboard && (
-
-                  <section className="officer-dashboard-section">
-
-                    <div className="section-heading">
-
-                      <div>
-
-                        <span className="eyebrow">
-                          {text.fieldOperations}
-                        </span>
-
-                        <h2>
-                          {text.officerDashboard}
-                        </h2>
-
-                        <p>
-                          {text.officerDescription}
-                        </p>
-
-                      </div>
-
-                      <span className="state-count">
-                        {
-                          incidentReports.length
-                        }
-                      </span>
-
-                    </div>
-
-                    {incidentReports.length ===
-                    0 ? (
-
-                      <div className="officer-empty-state">
-                        {text.noReports}
-                      </div>
-
-                    ) : (
-
-                      <div className="officer-report-list">
-
-                        {incidentReports.map(
-                          (report) => (
-
-                            <div
-                              className="officer-report-card"
-                              key={report.id}
-                            >
-
-                              <div className="officer-report-header">
-
-                                <div>
-
-                                  <span className="eyebrow">
-                                    {report.id}
-                                  </span>
-
-                                  <h3>
-                                    {report.type}
-                                  </h3>
-
-                                  <p>
-                                    <strong>
-                                      {text.location}:
-                                    </strong>{" "}
-                                    {
-                                      report.location
-                                    }
-                                  </p>
-
-                                  <p>
-                                    <strong>
-                                      {text.state}:
-                                    </strong>{" "}
-                                    {
-                                      report.state
-                                    }
-                                  </p>
-
-                                  <p>
-                                    <strong>
-                                      {text.submitted}:
-                                    </strong>{" "}
-                                    {
-                                      report.submittedAt
-                                    }
-                                  </p>
-
-                                </div>
-
-                                <span className="incident-status">
-                                  {report.status}
-                                </span>
-
-                              </div>
-
-                              <div className="officer-report-details">
-
-                                <p>
-                                  <strong>
-                                    {text.description}:
-                                  </strong>{" "}
-                                  {
-                                    report.description
-                                  }
-                                </p>
-
-                                <p>
-                                  <strong>
-                                    {text.severity}:
-                                  </strong>{" "}
-                                  {
-                                    report.severity
-                                  }
-                                </p>
-
-                                {report.photograph && (
-
-                                  <img
-                                    className="officer-report-image"
-                                    src={
-                                      report.photograph
-                                    }
-                                    alt="Incident submitted by citizen"
-                                  />
-
-                                )}
-
-                              </div>
-
-                              <div className="officer-report-actions">
-
-                                <label>
-
-                                  {text.verificationStatus}
-
-                                  <select
-                                    value={
-                                      report.status
-                                    }
-                                    onChange={(
-                                      event
-                                    ) =>
-                                      updateIncidentStatus(
-                                        report.id,
-                                        event.target.value
-                                      )
-                                    }
-                                  >
-
-                                    {incidentStatuses.map(
-                                      (status) => (
-
-                                        <option
-                                          key={
-                                            status
-                                          }
-                                          value={
-                                            status
-                                          }
-                                        >
-                                          {status}
-                                        </option>
-
-                                      )
-                                    )}
-
-                                  </select>
-
-                                </label>
-
-                                <label>
-
-                                  {text.actionTaken}
-
-                                  <textarea
-                                    rows="3"
-                                    placeholder={
-                                      text.siteInspection
-                                    }
-                                    value={
-                                      report.actionTaken ||
-                                      ""
-                                    }
-                                    onChange={(
-                                      event
-                                    ) =>
-                                      updateOfficerNote(
-                                        report.id,
-                                        event.target.value
-                                      )
-                                    }
-                                  />
-
-                                </label>
-
-                              </div>
+                              <small>
+                                Estimated risk:{" "}
+                                {stateLiveData
+                                  ? translateRisk(
+                                      stateLiveData.overallRisk
+                                    )
+                                  : "--"}
+                              </small>
 
                             </div>
 
-                          )
-                        )}
+                          </Popup>
 
-                      </div>
+                        </CircleMarker>
+                      );
+                    }
+                  )}
 
-                    )}
+                </MapContainer>
 
-                  </section>
+              </div>
 
-                )}
+            </section>
 
-                {/* =================================================
-                    SELECTED STATE
-                ================================================= */}
+            {/* =================================================
+                FULL ANALYSIS
+            ================================================= */}
 
-                <div className="selected-state-card">
+            {showFullAnalysis &&
+              currentState && (
 
-                  <div className="selected-state-content">
+                <section
+                  className="analysis-section"
+                  id="analysis-section"
+                >
 
-                    <span className="eyebrow">
-                      {text.selectedRegion}
-                    </span>
+                  <div className="section-heading">
 
-                    <h2>
-                      {currentState.name}
-                    </h2>
+                    <div>
 
-                    <div className="state-meta">
-
-                      <span>
-                        {currentState.capital}
+                      <span className="eyebrow">
+                        {text.regionalAnalysis}
                       </span>
 
-                      <span>
-                        •
-                      </span>
-
-                      <span>
-                        {currentState.region}
-                      </span>
+                      <h2>
+                        {
+                          currentState.name
+                        }{" "}
+                        {text.insights}
+                      </h2>
 
                     </div>
 
-                    <p>
-                      {
-                        currentState.description
-                      }
-                    </p>
-
-                    <button
-                      className="full-analysis-button"
-                      onClick={() =>
-                        handleFullAnalysis(
-                          currentState
-                        )
-                      }
-                    >
-                      {text.viewFullAnalysis}
-
-                      <span>
-                        →
-                      </span>
-
-                    </button>
-
-                  </div>
-
-                  <div className="selected-state-badge">
-
-                    <span>
-                      {text.estimatedRisk}
-                    </span>
-
-                    <strong
-                      className={getRiskClass(
+                    <span
+                      className={`analysis-risk-badge ${getRiskClass(
                         currentState.riskLevel
-                      )}
+                      )}`}
                     >
+
                       {currentState.overallRisk ===
                       "Waiting"
-                        ? currentState.overallRisk
+                        ? text.waiting
                         : translateRisk(
                             currentState.overallRisk
                           )}
-                    </strong>
 
-                  </div>
+                      {" "}
+                      {text.estimatedRisk.toLowerCase()}
 
-                </div>
-
-                {/* =================================================
-                    LIVE TOOLBAR
-                ================================================= */}
-
-                <div className="live-toolbar">
-
-                  <div>
-
-                    <span className="live-indicator"></span>
-
-                    <strong>
-                      {text.liveEnvironmentalData}
-                    </strong>
-
-                  </div>
-
-                  <span>
-                    {text.lastUpdated}:{" "}
-                    {formatLastUpdated()}
-                  </span>
-
-                  <button
-                    className="refresh-button"
-                    onClick={
-                      fetchLiveData
-                    }
-                    disabled={
-                      isRefreshing
-                    }
-                  >
-                    {isRefreshing
-                      ? text.refreshing
-                      : text.refreshData}
-                  </button>
-
-                </div>
-
-                {error && (
-
-                  <div className="error-message">
-                    {error}
-                  </div>
-
-                )}
-
-                {/* =================================================
-                    METRICS
-                ================================================= */}
-
-                <div className="metric-grid">
-
-                  <div className="metric-card">
-
-                    <div className="metric-card-top">
-
-                      <span className="metric-label">
-                        {text.temperature}
-                      </span>
-
-                      <span className="metric-icon">
-                        °
-                      </span>
-
-                    </div>
-
-                    <div className="metric-value-row">
-
-                      <strong>
-                        {isLoading
-                          ? "--"
-                          : currentState.temperature}
-                      </strong>
-
-                      <span>
-                        °C
-                      </span>
-
-                    </div>
-
-                    <p>
-                      {text.currentTemperature}
-                    </p>
-
-                  </div>
-
-                  <div className="metric-card">
-
-                    <div className="metric-card-top">
-
-                      <span className="metric-label">
-                        {text.soilMoisture}
-                      </span>
-
-                      <span className="metric-icon">
-                        ◌
-                      </span>
-
-                    </div>
-
-                    <div className="metric-value-row">
-
-                      <strong>
-                        {isLoading
-                          ? "--"
-                          : Math.round(
-                              Number(
-                                currentState.soilMoisture
-                              ) *
-                                100
-                            )}
-                      </strong>
-
-                      <span>
-                        %
-                      </span>
-
-                    </div>
-
-                    <div className="progress-track">
-
-                      <div
-                        className="progress-fill moisture-fill"
-                        style={{
-                          width:
-                            isLoading
-                              ? "0%"
-                              : `${Math.min(
-                                  Number(
-                                    currentState.soilMoisture
-                                  ) *
-                                    100,
-                                  100
-                                )}%`,
-                        }}
-                      ></div>
-
-                    </div>
-
-                    <p>
-                      {text.soilEstimate}
-                    </p>
-
-                  </div>
-
-                  <div className="metric-card">
-
-                    <div className="metric-card-top">
-
-                      <span className="metric-label">
-                        {text.rainfall}
-                      </span>
-
-                      <span className="metric-icon">
-                        ⌁
-                      </span>
-
-                    </div>
-
-                    <div className="metric-value-row">
-
-                      <strong>
-                        {isLoading
-                          ? "--"
-                          : currentState.rainfall}
-                      </strong>
-
-                      <span>
-                        mm
-                      </span>
-
-                    </div>
-
-                    <div className="progress-track">
-
-                      <div
-                        className="progress-fill rain-fill"
-                        style={{
-                          width:
-                            isLoading
-                              ? "0%"
-                              : `${Math.min(
-                                  Number(
-                                    currentState.rainfall
-                                  ) *
-                                    4,
-                                  100
-                                )}%`,
-                        }}
-                      ></div>
-
-                    </div>
-
-                    <div className="rain-probability">
-
-                      <span>
-                        {text.rainProbability}
-                      </span>
-
-                      <strong>
-                        {isLoading
-                          ? "--"
-                          : `${currentState.rainProbability}%`}
-                      </strong>
-
-                    </div>
-
-                    <p>
-                      {text.currentRainfall}
-                    </p>
-
-                  </div>
-
-                  <div className="metric-card">
-
-                    <div className="metric-card-top">
-
-                      <span className="metric-label">
-                        {text.overallRisk}
-                      </span>
-
-                      <span className="metric-icon">
-                        ◈
-                      </span>
-
-                    </div>
-
-                    <div className="metric-value-row risk-value-row">
-
-                      <strong
-                        className={getRiskClass(
-                          currentState.riskLevel
-                        )}
-                      >
-                        {currentState.overallRisk ===
-                        "Waiting"
-                          ? currentState.overallRisk
-                          : translateRisk(
-                              currentState.overallRisk
-                            )}
-                      </strong>
-
-                    </div>
-
-                    <div className="risk-status-line">
-
-                      <span
-                        className={`risk-indicator ${getRiskClass(
-                          currentState.riskLevel
-                        )}`}
-                      ></span>
-
-                      <span>
-                        {text.estimatedIndicators}
-                      </span>
-
-                    </div>
-
-                    <p>
-                      {text.notOfficial}
-                    </p>
-
-                  </div>
-
-                </div>
-
-                {/* =================================================
-                    CURRENT WEATHER
-                ================================================= */}
-
-                <div className="current-weather-card">
-
-                  <div className="current-weather-icon">
-
-                    {getWeatherIcon(
-                      currentState.weatherCode
-                    )}
-
-                  </div>
-
-                  <div>
-
-                    <span className="eyebrow">
-                      {text.currentWeather}
-                    </span>
-
-                    <h3>
-                      {isLoading
-                        ? "Loading..."
-                        : getWeatherDescription(
-                            currentState.weatherCode
-                          )}
-                    </h3>
-
-                    <p>
-                      {isLoading
-                        ? "--"
-                        : `${currentState.temperature}°C in ${currentState.name}`}
-                    </p>
-
-                    <div className="current-weather-details">
-
-                      <span>
-                        {text.humidity}:{" "}
-                        <strong>
-                          {isLoading
-                            ? "--"
-                            : `${currentState.humidity}%`}
-                        </strong>
-                      </span>
-
-                      <span>
-                        {text.rainProbability}:{" "}
-                        <strong>
-                          {isLoading
-                            ? "--"
-                            : `${currentState.rainProbability}%`}
-                        </strong>
-                      </span>
-
-                      <span>
-                        {text.windSpeed}:{" "}
-                        <strong>
-                          {isLoading
-                            ? "--"
-                            : `${currentState.windSpeed} km/h`}
-                        </strong>
-                      </span>
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-                {/* =================================================
-                    7-DAY FORECAST
-                ================================================= */}
-
-                <section className="forecast-section">
-
-                  <div className="section-heading">
-
-                    <div>
-
-                      <span className="eyebrow">
-                        {text.weatherOutlook}
-                      </span>
-
-                      <h2>
-                        {text.sevenDayForecast}
-                      </h2>
-
-                    </div>
-
-                    <span className="forecast-location">
-                      {currentState.name}
                     </span>
 
                   </div>
 
-                  <div className="forecast-grid">
+                  <div className="analysis-grid">
 
-                    {isLoading ? (
+                    <div className="analysis-summary">
 
-                      <div className="forecast-loading">
-                        {text.forecastLoading}
-                      </div>
+                      <h3>
+                        {text.liveOverview}
+                      </h3>
 
-                    ) : currentState.forecast
-                        ?.length === 0 ? (
-
-                      <div className="forecast-loading">
-                        {text.forecastUnavailable}
-                      </div>
-
-                    ) : (
-
-                      currentState.forecast.map(
-                        (day, index) => {
-
-                          const forecastDate =
-                            new Date(
-                              `${day.date}T00:00:00`
-                            );
-
-                          const formattedDate =
-                            index === 0
-                              ? text.today
-                              : forecastDate.toLocaleDateString(
-                                  language ===
-                                    "Tamil"
-                                    ? "ta-IN"
-                                    : language ===
-                                      "Hindi"
-                                    ? "hi-IN"
-                                    : "en-IN",
-                                  {
-                                    weekday:
-                                      "short",
-                                  }
-                                );
-
-                          return (
-                            <div
-                              className="forecast-card"
-                              key={
-                                day.date
-                              }
-                            >
-
-                              <span className="forecast-day">
-                                {
-                                  formattedDate
-                                }
-                              </span>
-
-                              <div className="forecast-icon">
-                                {getWeatherIcon(
-                                  day.weatherCode
-                                )}
-                              </div>
-
-                              <strong className="forecast-temperature">
-                                {Math.round(
-                                  day.maxTemperature
-                                )}
-                                °
-                              </strong>
-
-                              <span className="forecast-min-temperature">
-                                {Math.round(
-                                  day.minTemperature
-                                )}
-                                °
-                              </span>
-
-                              <p className="forecast-description">
-                                {getWeatherDescription(
-                                  day.weatherCode
-                                )}
-                              </p>
-
-                              <div className="forecast-rainfall">
-
-                                <span>
-                                  {text.rain}
-                                </span>
-
-                                <strong>
-                                  {Number(
-                                    day.rainfall
-                                  ).toFixed(
-                                    1
-                                  )}{" "}
-                                  mm
-                                </strong>
-
-                              </div>
-
-                            </div>
-                          );
+                      <p>
+                        {
+                          currentState.description
                         }
-                      )
+                      </p>
 
-                    )}
-
-                  </div>
-
-                </section>
-
-                {/* =================================================
-                    WEATHER CHARTS
-                ================================================= */}
-
-                <section className="charts-section">
-
-                  <div className="section-heading">
-
-                    <div>
-
-                      <span className="eyebrow">
-                        {text.visualInsights}
-                      </span>
-
-                      <h2>
-                        {text.weatherTrends}
-                      </h2>
-
-                    </div>
-
-                  </div>
-
-                  <div className="charts-grid">
-
-                    <div className="chart-card">
-
-                      <div className="chart-card-header">
+                      <div className="analysis-details">
 
                         <div>
 
-                          <h3>
-                            {text.temperatureTrend}
-                          </h3>
+                          <span>
+                            {text.temperature}
+                          </span>
 
-                          <p>
-                            {text.temperatureDescription}
-                          </p>
+                          <strong>
+                            {
+                              currentState.temperature
+                            }
+                            °C
+                          </strong>
 
                         </div>
-
-                        <span className="chart-unit">
-                          °C
-                        </span>
-
-                      </div>
-
-                      <div className="chart-wrapper">
-
-                        <ResponsiveContainer
-                          width="100%"
-                          height={300}
-                        >
-
-                          <LineChart
-                            data={
-                              forecast
-                            }
-                          >
-
-                            <CartesianGrid
-                              strokeDasharray="3 3"
-                            />
-
-                            <XAxis
-                              dataKey="date"
-                              tickFormatter={(
-                                date
-                              ) =>
-                                new Date(
-                                  date
-                                ).toLocaleDateString(
-                                  "en-IN",
-                                  {
-                                    weekday:
-                                      "short",
-                                  }
-                                )
-                              }
-                            />
-
-                            <YAxis />
-
-                            <Tooltip
-                              formatter={(
-                                value,
-                                name
-                              ) => [
-                                `${value}°C`,
-                                name,
-                              ]}
-                            />
-
-                            <Line
-                              type="monotone"
-                              dataKey="maxTemperature"
-                              name="Maximum"
-                              stroke="#ef4444"
-                              strokeWidth={3}
-                              dot={{
-                                r: 4,
-                              }}
-                            />
-
-                            <Line
-                              type="monotone"
-                              dataKey="minTemperature"
-                              name="Minimum"
-                              stroke="#3b82f6"
-                              strokeWidth={3}
-                              dot={{
-                                r: 4,
-                              }}
-                            />
-
-                          </LineChart>
-
-                        </ResponsiveContainer>
-
-                      </div>
-
-                    </div>
-
-                    <div className="chart-card">
-
-                      <div className="chart-card-header">
 
                         <div>
 
-                          <h3>
-                            {text.rainfallForecast}
-                          </h3>
+                          <span>
+                            {text.rainfall}
+                          </span>
 
-                          <p>
-                            {text.rainfallDescription}
-                          </p>
+                          <strong>
+                            {
+                              currentState.rainfall
+                            }{" "}
+                            mm
+                          </strong>
 
                         </div>
 
-                        <span className="chart-unit">
-                          mm
-                        </span>
+                        <div>
 
-                      </div>
+                          <span>
+                            {text.humidity}
+                          </span>
 
-                      <div className="chart-wrapper">
-
-                        <ResponsiveContainer
-                          width="100%"
-                          height={300}
-                        >
-
-                          <BarChart
-                            data={
-                              forecast
+                          <strong>
+                            {
+                              currentState.humidity
                             }
-                          >
+                            %
+                          </strong>
 
-                            <CartesianGrid
-                              strokeDasharray="3 3"
-                            />
+                        </div>
 
-                            <XAxis
-                              dataKey="date"
-                              tickFormatter={(
-                                date
-                              ) =>
-                                new Date(
-                                  date
-                                ).toLocaleDateString(
-                                  "en-IN",
-                                  {
-                                    weekday:
-                                      "short",
-                                  }
-                                )
-                              }
-                            />
+                        <div>
 
-                            <YAxis />
+                          <span>
+                            {text.windSpeed}
+                          </span>
 
-                            <Tooltip
-                              formatter={(
-                                value
-                              ) => [
-                                `${value} mm`,
-                                text.rain,
-                              ]}
-                            />
+                          <strong>
+                            {
+                              currentState.windSpeed
+                            }{" "}
+                            km/h
+                          </strong>
 
-                            <Bar
-                              dataKey="rainfall"
-                              name={
-                                text.rain
-                              }
-                              fill="#0ea5e9"
-                              radius={[
-                                8,
-                                8,
-                                0,
-                                0,
-                              ]}
-                            />
-
-                          </BarChart>
-
-                        </ResponsiveContainer>
+                        </div>
 
                       </div>
 
                     </div>
 
-                  </div>
+                    <div className="analysis-highlights">
 
-                </section>
+                      <h3>
+                        {
+                          text.monitoringPriorities
+                        }
+                      </h3>
 
-                {/* =================================================
-                    ALERTS
-                ================================================= */}
+                      <div className="highlight-list">
 
-                <section className="alerts-section">
-
-                  <div className="section-heading alerts-heading">
-
-                    <div>
-
-                      <span className="eyebrow">
-                        {text.advisories}
-                      </span>
-
-                      <h2>
-                        {text.emergencyAlerts}
-                      </h2>
-
-                    </div>
-
-                    <button
-                      className="alerts-toggle-button"
-                      onClick={() =>
-                        setShowAlerts(
-                          (previous) =>
-                            !previous
-                        )
-                      }
-                    >
-                      {showAlerts
-                        ? text.hideAlerts
-                        : text.showAlerts}
-                    </button>
-
-                  </div>
-
-                  <div className="alerts-notice">
-
-                    <span className="alerts-notice-icon">
-                      i
-                    </span>
-
-                    <p>
-                      {text.advisoryNotice}
-                    </p>
-
-                  </div>
-
-                  {showAlerts && (
-
-                    <div className="alerts-list">
-
-                      {advisories.length ===
-                      0 ? (
-
-                        <div className="alert-empty">
-                          {text.alertsUnavailable}
-                        </div>
-
-                      ) : (
-
-                        advisories.map(
+                        {currentState.highlights.map(
                           (
-                            advisory,
-                            index
+                            highlight
                           ) => (
 
                             <div
-                              className={`alert-card alert-${advisory.level}`}
-                              key={`${advisory.title}-${index}`}
+                              className="highlight-item"
+                              key={
+                                highlight
+                              }
                             >
 
-                              <div className="alert-card-icon">
+                              <span>
+                                ✓
+                              </span>
 
-                                {advisory.level ===
-                                "low"
-                                  ? "✓"
-                                  : "!"}
-
-                              </div>
-
-                              <div className="alert-card-content">
-
-                                <div className="alert-card-top">
-
-                                  <strong>
-                                    {advisory.title}
-                                  </strong>
-
-                                  <span className="alert-level">
-
-                                    {advisory.level ===
-                                    "high"
-                                      ? text.high
-                                      : advisory.level ===
-                                        "moderate"
-                                      ? text.moderate
-                                      : text.low}
-
-                                  </span>
-
-                                </div>
-
-                                <p>
-                                  {
-                                    advisory.message
-                                  }
-                                </p>
-
-                                <small>
-
-                                  <strong>
-                                    {
-                                      text.suggestedAction
-                                    }:
-                                  </strong>{" "}
-
-                                  {
-                                    advisory.action
-                                  }
-
-                                </small>
-
-                              </div>
+                              <strong>
+                                {
+                                  highlight
+                                }
+                              </strong>
 
                             </div>
 
                           )
-                        )
-
-                      )}
-
-                    </div>
-
-                  )}
-
-                </section>
-
-                {/* =================================================
-                    MAP
-                ================================================= */}
-
-                <section
-                  className="map-section"
-                  id="map-section"
-                >
-
-                  <div className="section-heading map-heading">
-
-                    <div>
-
-                      <span className="eyebrow">
-                        {text.interactiveMap}
-                      </span>
-
-                      <h2>
-                        {
-                          text.northEasternRegion
-                        }
-                      </h2>
-
-                    </div>
-
-                    <div className="map-legend">
-
-                      <span>
-                        <i className="legend-dot low"></i>
-                        {text.low}
-                      </span>
-
-                      <span>
-                        <i className="legend-dot moderate"></i>
-                        {text.moderate}
-                      </span>
-
-                      <span>
-                        <i className="legend-dot high"></i>
-                        {text.high}
-                      </span>
-
-                    </div>
-
-                  </div>
-
-                  <div className="map-wrapper">
-
-                    <MapContainer
-                      center={
-                        selectedState.coordinates
-                      }
-                      zoom={6}
-                      scrollWheelZoom={
-                        true
-                      }
-                      className="leaflet-map"
-                    >
-
-                      <TileLayer
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                      />
-
-                      <MapController
-                        selectedState={
-                          selectedState
-                        }
-                      />
-
-                      {states.map(
-                        (state) => {
-
-                          const stateLiveData =
-                            liveData[
-                              state.id
-                            ];
-
-                          return (
-                            <Marker
-                              key={
-                                state.id
-                              }
-                              position={
-                                state.coordinates
-                              }
-                              eventHandlers={{
-                                click: () =>
-                                  handleStateSelect(
-                                    state
-                                  ),
-                              }}
-                            >
-
-                              <Popup>
-
-                                <div className="map-popup">
-
-                                  <strong>
-                                    {
-                                      state.name
-                                    }
-                                  </strong>
-
-                                  <span>
-                                    {
-                                      state.capital
-                                    }
-                                  </span>
-
-                                  <small>
-                                    Temperature:{" "}
-                                    {
-                                      stateLiveData?.temperature ??
-                                      "--"
-                                    }
-                                    °C
-                                  </small>
-
-                                  <small>
-                                    Weather:{" "}
-                                    {stateLiveData
-                                      ? getWeatherDescription(
-                                          stateLiveData.weatherCode
-                                        )
-                                      : "--"}
-                                  </small>
-
-                                  <small>
-                                    Rainfall:{" "}
-                                    {
-                                      stateLiveData?.rainfall ??
-                                      "--"
-                                    }{" "}
-                                    mm
-                                  </small>
-
-                                  <small>
-                                    Rain probability:{" "}
-                                    {stateLiveData?.rainProbability ??
-                                      "--"}
-                                    %
-                                  </small>
-
-                                  <small>
-                                    Estimated risk:{" "}
-                                    {translateRisk(
-                                      stateLiveData?.overallRisk
-                                    )}
-                                  </small>
-
-                                </div>
-
-                              </Popup>
-
-                            </Marker>
-                          );
-                        }
-                      )}
-
-                    </MapContainer>
-
-                  </div>
-
-                </section>
-
-                {/* =================================================
-                    FULL ANALYSIS
-                ================================================= */}
-
-                {showFullAnalysis && (
-
-                  <section
-                    className="analysis-section"
-                    id="analysis-section"
-                  >
-
-                    <div className="section-heading">
-
-                      <div>
-
-                        <span className="eyebrow">
-                          {text.regionalAnalysis}
-                        </span>
-
-                        <h2>
-                          {
-                            currentState.name
-                          }{" "}
-                          {text.insights}
-                        </h2>
+                        )}
 
                       </div>
 
-                      <span
-                        className={`analysis-risk-badge ${getRiskClass(
-                          currentState.riskLevel
-                        )}`}
-                      >
-                        {currentState.overallRisk ===
-                        "Waiting"
-                          ? currentState.overallRisk
-                          : translateRisk(
-                              currentState.overallRisk
-                            )}{" "}
-                        {text.estimatedRisk.toLowerCase()}
-                      </span>
-
                     </div>
 
-                    <div className="analysis-grid">
+                  </div>
 
-                      <div className="analysis-summary">
+                </section>
+              )}
 
-                        <h3>
-                          {text.liveOverview}
-                        </h3>
+            {/* =================================================
+                INCIDENT REPORTS
+            ================================================= */}
+
+            {incidentReports.length >
+              0 && (
+
+              <section className="reports-section">
+
+                <div className="section-heading">
+
+                  <div>
+
+                    <span className="eyebrow">
+                      {text.communityReports}
+                    </span>
+
+                    <h2>
+                      {text.recentReports}
+                    </h2>
+
+                  </div>
+
+                </div>
+
+                <div className="reports-list">
+
+                  {incidentReports.map(
+                    (
+                      report
+                    ) => (
+
+                      <div
+                        className="report-card"
+                        key={
+                          report.id
+                        }
+                      >
+
+                        <div className="report-card-header">
+
+                          <strong>
+                            {
+                              report.type
+                            }
+                          </strong>
+
+                          <span>
+                            {
+                              report.status
+                            }
+                          </span>
+
+                        </div>
 
                         <p>
                           {
-                            currentState.description
+                            report.description
                           }
                         </p>
 
-                        <div className="analysis-details">
-
-                          <div>
-
-                            <span>
-                              {
-                                text.temperature
-                              }
-                            </span>
-
-                            <strong>
-                              {
-                                currentState.temperature
-                              }
-                              °C
-                            </strong>
-
-                          </div>
-
-                          <div>
-
-                            <span>
-                              {
-                                text.rainfall
-                              }
-                            </span>
-
-                            <strong>
-                              {
-                                currentState.rainfall
-                              }{" "}
-                              mm
-                            </strong>
-
-                          </div>
-
-                          <div>
-
-                            <span>
-                              {
-                                text.humidity
-                              }
-                            </span>
-
-                            <strong>
-                              {
-                                currentState.humidity
-                              }
-                              %
-                            </strong>
-
-                          </div>
-
-                          <div>
-
-                            <span>
-                              {
-                                text.windSpeed
-                              }
-                            </span>
-
-                            <strong>
-                              {
-                                currentState.windSpeed
-                              }{" "}
-                              km/h
-                            </strong>
-
-                          </div>
-
-                        </div>
-
-                      </div>
-
-                      <div className="analysis-highlights">
-
-                        <h3>
+                        <small>
+                          <strong>
+                            {
+                              text.location
+                            }:
+                          </strong>{" "}
                           {
-                            text.monitoringPriorities
+                            report.location
                           }
-                        </h3>
+                        </small>
 
-                        <div className="highlight-list">
+                        <small>
+                          <strong>
+                            {
+                              text.state
+                            }:
+                          </strong>{" "}
+                          {
+                            report.state
+                          }
+                        </small>
 
-                          {currentState.highlights.map(
-                            (
-                              highlight
-                            ) => (
-
-                              <div
-                                className="highlight-item"
-                                key={
-                                  highlight
-                                }
-                              >
-
-                                <span>
-                                  ✓
-                                </span>
-
-                                <p>
-                                  {
-                                    highlight
-                                  }
-                                </p>
-
-                              </div>
-
-                            )
-                          )}
-
-                        </div>
+                        <small>
+                          <strong>
+                            {
+                              text.severity
+                            }:
+                          </strong>{" "}
+                          {
+                            report.severity
+                          }
+                        </small>
 
                       </div>
 
-                    </div>
+                    )
+                  )}
 
-                  </section>
+                </div>
+
+              </section>
+            )}
+
+            {/* =================================================
+                FIELD OFFICER DASHBOARD
+            ================================================= */}
+
+            {showOfficerDashboard && (
+
+              <section className="officer-dashboard">
+
+                <div className="section-heading">
+
+                  <div>
+
+                    <span className="eyebrow">
+                      FIELD OPERATIONS
+                    </span>
+
+                    <h2>
+                      {
+                        text.fieldOfficerDashboard
+                      }
+                    </h2>
+
+                  </div>
+
+                </div>
+
+                {incidentReports.length ===
+                0 ? (
+
+                  <div className="alert-empty">
+                    {text.noReports}
+                  </div>
+
+                ) : (
+
+                  <div className="officer-report-list">
+
+                    {incidentReports.map(
+                      (
+                        report
+                      ) => (
+
+                        <div
+                          className="officer-report-card"
+                          key={
+                            report.id
+                          }
+                        >
+
+                          <div className="officer-report-header">
+
+                            <div>
+
+                              <strong>
+                                {
+                                  report.type
+                                }
+                              </strong>
+
+                              <span>
+                                {
+                                  report.state
+                                }
+                              </span>
+
+                            </div>
+
+                            <select
+                              value={
+                                report.status
+                              }
+                              onChange={(
+                                event
+                              ) =>
+                                updateIncidentStatus(
+                                  report.id,
+                                  event.target
+                                    .value
+                                )
+                              }
+                            >
+
+                              {incidentStatuses.map(
+                                (
+                                  status
+                                ) => (
+                                  <option
+                                    key={
+                                      status
+                                    }
+                                    value={
+                                      status
+                                    }
+                                  >
+                                    {
+                                      status
+                                    }
+                                  </option>
+                                )
+                              )}
+
+                            </select>
+
+                          </div>
+
+                          <p>
+                            {
+                              report.description
+                            }
+                          </p>
+
+                          <small>
+                            {
+                              report.location
+                            }
+                          </small>
+
+                          <textarea
+                            placeholder={
+                              text.actionTaken
+                            }
+                            value={
+                              report.actionTaken ||
+                              ""
+                            }
+                            onChange={(
+                              event
+                            ) =>
+                              updateOfficerNote(
+                                report.id,
+                                event.target
+                                  .value
+                              )
+                            }
+                          />
+
+                        </div>
+
+                      )
+                    )}
+
+                  </div>
 
                 )}
 
-              </>
-
+              </section>
             )}
 
-          </section>
+          </div>
 
-        </section>
+        </div>
 
       </main>
 
       {/* =================================================
-          INCIDENT REPORT MODAL
+          INCIDENT MODAL
       ================================================= */}
 
       {showIncidentForm && (
 
-        <div className="incident-modal-overlay">
+        <div
+          className="modal-overlay"
+          onClick={(event) => {
+
+            if (
+              event.target ===
+              event.currentTarget
+            ) {
+              setShowIncidentForm(
+                false
+              );
+            }
+
+          }}
+        >
 
           <div className="incident-modal">
 
-            <div className="incident-modal-header">
+            <div className="modal-header">
 
               <div>
 
                 <span className="eyebrow">
-                  {
-                    text.citizenReporting
-                  }
+                  {text.citizenReporting}
                 </span>
 
                 <h2>
@@ -3612,9 +4336,7 @@ function App() {
 
                 <label>
 
-                  {
-                    text.incidentType
-                  }
+                  {text.incidentType}
 
                   <select
                     name="type"
@@ -3627,15 +4349,19 @@ function App() {
                   >
 
                     {incidentTypes.map(
-                      (type) => (
-
+                      (
+                        type
+                      ) => (
                         <option
-                          key={type}
-                          value={type}
+                          key={
+                            type
+                          }
+                          value={
+                            type
+                          }
                         >
                           {type}
                         </option>
-
                       )
                     )}
 
@@ -3764,7 +4490,6 @@ function App() {
           </div>
 
         </div>
-
       )}
 
       {/* =================================================
@@ -3774,8 +4499,9 @@ function App() {
       <footer className="footer">
 
         <p>
-          Sahaya Land © 2026. Live weather prototype for
-          environmental awareness and monitoring.
+          Sahaya Land © 2026. Live weather
+          prototype for environmental
+          awareness and monitoring.
         </p>
 
         <span>
