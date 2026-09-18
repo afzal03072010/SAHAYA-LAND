@@ -805,14 +805,14 @@ function calculateRisk(rainfall, soilMoisture) {
   const rain = Number(rainfall) || 0;
   const moisture = Number(soilMoisture) || 0;
 
-  if (rain >= 20 || moisture >= 0.8) {
+  if (rain >= 25 || moisture >= 0.9) {
     return {
       label: "High",
       level: "high",
     };
   }
 
-  if (rain >= 5 || moisture >= 0.6) {
+  if (rain >= 10 || moisture >= 0.75) {
     return {
       label: "Moderate",
       level: "moderate",
@@ -1030,7 +1030,9 @@ function App() {
   const [language, setLanguage] =
     useState("English");
 
-  const text = translations[language];
+  const text =
+    translations[language] ||
+    translations.English;
 
   /* =====================================================
      SAVE SELECTED STATE
@@ -1605,6 +1607,46 @@ function App() {
 
             <option value="Tamil">
               தமிழ்
+            </option>
+
+            <option value="Telugu">
+              తెలుగు
+            </option>
+
+            <option value="Bengali">
+              বাংলা
+            </option>
+
+            <option value="Marathi">
+              मराठी
+            </option>
+
+            <option value="Kannada">
+              ಕನ್ನಡ
+            </option>
+
+            <option value="Malayalam">
+              മലയാളം
+            </option>
+
+            <option value="Gujarati">
+              ગુજરાતી
+            </option>
+
+            <option value="Punjabi">
+              ਪੰਜਾਬੀ
+            </option>
+
+            <option value="Odia">
+              ଓଡ଼ିଆ
+            </option>
+
+            <option value="Assamese">
+              অসমীয়া
+            </option>
+
+            <option value="Urdu">
+              اردو
             </option>
 
           </select>
@@ -3288,17 +3330,33 @@ function App() {
                               radius={10}
                               pathOptions={{
                                 color:
-                                  stateLiveData?.riskLevel === "high"
+                                  String(
+                                    stateLiveData?.riskLevel || ""
+                                  ).toLowerCase() === "high"
                                     ? "#ef4444"
-                                    : stateLiveData?.riskLevel === "moderate"
+                                    : String(
+                                          stateLiveData?.riskLevel || ""
+                                        ).toLowerCase() === "moderate"
                                     ? "#f59e0b"
-                                    : "#22c55e",
+                                    : String(
+                                          stateLiveData?.riskLevel || ""
+                                        ).toLowerCase() === "low"
+                                    ? "#16a34a"
+                                    : "#94a3b8",
                                 fillColor:
-                                  stateLiveData?.riskLevel === "high"
+                                  String(
+                                    stateLiveData?.riskLevel || ""
+                                  ).toLowerCase() === "high"
                                     ? "#ef4444"
-                                    : stateLiveData?.riskLevel === "moderate"
+                                    : String(
+                                          stateLiveData?.riskLevel || ""
+                                        ).toLowerCase() === "moderate"
                                     ? "#f59e0b"
-                                    : "#22c55e",
+                                    : String(
+                                          stateLiveData?.riskLevel || ""
+                                        ).toLowerCase() === "low"
+                                    ? "#16a34a"
+                                    : "#94a3b8",
                                 fillOpacity: 0.8,
                                 weight: 2,
                               }}

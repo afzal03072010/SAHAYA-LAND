@@ -930,9 +930,9 @@ function calculateRisk(
   );
 
   if (
-    score >= 60 ||
-    rain >= 20 ||
-    moisture >= 0.8
+    score >= 65 ||
+    rain >= 25 ||
+    moisture >= 0.9
   ) {
     return {
       label: "High",
@@ -942,9 +942,9 @@ function calculateRisk(
   }
 
   if (
-    score >= 30 ||
-    rain >= 5 ||
-    moisture >= 0.6
+    score >= 35 ||
+    rain >= 10 ||
+    moisture >= 0.75
   ) {
     return {
       label: "Moderate",
@@ -1294,7 +1294,8 @@ function App() {
     useState("English");
 
   const text =
-    translations[language];
+    translations[language] ||
+    translations.English;
 
   /* =======================================================
      CITIZEN REPORTING
@@ -2219,6 +2220,46 @@ function App() {
               தமிழ்
             </option>
 
+            <option value="Telugu">
+              తెలుగు
+            </option>
+
+            <option value="Bengali">
+              বাংলা
+            </option>
+
+            <option value="Marathi">
+              मराठी
+            </option>
+
+            <option value="Kannada">
+              ಕನ್ನಡ
+            </option>
+
+            <option value="Malayalam">
+              മലയാളം
+            </option>
+
+            <option value="Gujarati">
+              ગુજરાતી
+            </option>
+
+            <option value="Punjabi">
+              ਪੰਜਾਬੀ
+            </option>
+
+            <option value="Odia">
+              ଓଡ଼ିଆ
+            </option>
+
+            <option value="Assamese">
+              অসমীয়া
+            </option>
+
+            <option value="Urdu">
+              اردو
+            </option>
+
           </select>
 
         </div>
@@ -2314,60 +2355,6 @@ function App() {
             <p>
               {text.liveNoticeText}
             </p>
-          </div>
-
-        </section>
-
-        {/* =================================================
-            COMMUNITY SAFETY
-        ================================================= */}
-
-        <section className="community-safety">
-
-          <div>
-
-            <span className="eyebrow">
-              {text.communitySafety}
-            </span>
-
-            <h2>
-              {text.seeUnusual}
-            </h2>
-
-            <p>
-              {text.reportDescription}
-            </p>
-
-          </div>
-
-          <div className="community-actions">
-
-            <button
-              className="primary-button"
-              onClick={() =>
-                setShowIncidentForm(
-                  true
-                )
-              }
-            >
-              +{" "}
-              {text.reportIncident}
-            </button>
-
-            <button
-              className="secondary-button"
-              onClick={() =>
-                setShowOfficerDashboard(
-                  (previous) =>
-                    !previous
-                )
-              }
-            >
-              {showOfficerDashboard
-                ? text.hideOfficerDashboard
-                : text.fieldOfficerDashboard}
-            </button>
-
           </div>
 
         </section>
@@ -2644,6 +2631,60 @@ function App() {
                 </p>
               </section>
             )}
+
+            {/* =================================================
+                COMMUNITY SAFETY
+            ================================================= */}
+
+            <section className="community-safety">
+
+              <div>
+
+                <span className="eyebrow">
+                  {text.communitySafety}
+                </span>
+
+                <h2>
+                  {text.seeUnusual}
+                </h2>
+
+                <p>
+                  {text.reportDescription}
+                </p>
+
+              </div>
+
+              <div className="community-actions">
+
+                <button
+                  className="primary-button"
+                  onClick={() =>
+                    setShowIncidentForm(
+                      true
+                    )
+                  }
+                >
+                  +{" "}
+                  {text.reportIncident}
+                </button>
+
+                <button
+                  className="secondary-button"
+                  onClick={() =>
+                    setShowOfficerDashboard(
+                      (previous) =>
+                        !previous
+                    )
+                  }
+                >
+                  {showOfficerDashboard
+                    ? text.hideOfficerDashboard
+                    : text.fieldOfficerDashboard}
+                </button>
+
+              </div>
+
+            </section>
 
             {/* =================================================
                 LIVE STATUS BAR
@@ -3317,309 +3358,6 @@ function App() {
             </section>
 
             {/* =================================================
-                RISK ZONE
-            ================================================= */}
-
-            <section
-              className="risk-zone-section"
-              id="risk-zone-section"
-            >
-
-              <div className="section-heading">
-
-                <div>
-
-                  <span className="eyebrow">
-                    {text.riskZone}
-                  </span>
-
-                  <h2>
-                    {text.riskZoneTitle}
-                  </h2>
-
-                  <p>
-                    {text.riskZoneDescription}
-                  </p>
-
-                </div>
-
-                <div className="risk-zone-controls">
-
-                  <label htmlFor="risk-zone-select">
-                    {text.selectRiskState}
-                  </label>
-
-                  <select
-                    id="risk-zone-select"
-                    className="state-selector"
-                    value={
-                      selectedRiskState?.id ||
-                      ""
-                    }
-                    onChange={(
-                      event
-                    ) =>
-                      setSelectedRiskStateId(
-                        event.target
-                          .value
-                      )
-                    }
-                  >
-
-                    {riskZoneStates.map(
-                      (
-                        state
-                      ) => (
-                        <option
-                          key={
-                            state.id
-                          }
-                          value={
-                            state.id
-                          }
-                        >
-                          {state.name}
-                        </option>
-                      )
-                    )}
-
-                  </select>
-
-                </div>
-
-              </div>
-
-              {/* IMPORTANT:
-                  This maps over riskZoneStates = ALL 36.
-              */}
-
-              <div className="risk-zone-grid">
-
-                {riskZoneStates.map(
-                  (state) => {
-
-                    const stateData =
-                      liveData[
-                        state.id
-                      ];
-
-                    const risk =
-                      stateData
-                        ? {
-                            label:
-                              stateData.overallRisk,
-
-                            level:
-                              stateData.riskLevel,
-
-                            score:
-                              stateData.riskScore ??
-                              calculateRisk(
-                                stateData.rainfall,
-                                stateData.soilMoisture
-                              ).score,
-                          }
-                        : {
-                            label:
-                              "Waiting",
-
-                            level:
-                              "moderate",
-
-                            score: 0,
-                          };
-
-                    const isSelected =
-                      selectedRiskState?.id ===
-                      state.id;
-
-                    return (
-                      <button
-                        key={
-                          state.id
-                        }
-                        type="button"
-                        className={`risk-zone-card ${
-                          isSelected
-                            ? "selected"
-                            : ""
-                        }`}
-                        onClick={() => {
-
-                          setSelectedRiskStateId(
-                            state.id
-                          );
-
-                          setSelectedStateId(
-                            state.id
-                          );
-
-                        }}
-                      >
-
-                        <div className="risk-zone-card-top">
-
-                          <div>
-
-                            <strong>
-                              {state.name}
-                            </strong>
-
-                            <span>
-                              {state.region}
-                            </span>
-
-                          </div>
-
-                          <span
-                            className={`risk-badge ${getRiskClass(
-                              risk.level
-                            )}`}
-                          >
-                            {risk.label ===
-                            "Waiting"
-                              ? text.waiting
-                              : translateRisk(
-                                  risk.label
-                                )}
-                          </span>
-
-                        </div>
-
-                        <div className="risk-progress">
-
-                          <div
-                            className="risk-progress-bar"
-                            style={{
-                              width: `${risk.score}%`,
-                            }}
-                          ></div>
-
-                        </div>
-
-                        <div className="risk-zone-card-bottom">
-
-                          <span>
-                            {text.riskScore}
-                          </span>
-
-                          <strong>
-                            {stateData
-                              ? `${risk.score}/100`
-                              : "--"}
-                          </strong>
-
-                        </div>
-
-                      </button>
-                    );
-                  }
-                )}
-
-              </div>
-
-              {/* SELECTED RISK */}
-
-              {selectedRiskState && (
-                <div className="selected-risk-zone">
-
-                  <div className="selected-risk-zone-main">
-
-                    <span className="eyebrow">
-                      {text.liveRisk}
-                    </span>
-
-                    <h3>
-                      {
-                        selectedRiskState.name
-                      }
-                    </h3>
-
-                    <p>
-                      {
-                        selectedRiskState.description
-                      }
-                    </p>
-
-                  </div>
-
-                  <div className="selected-risk-metrics">
-
-                    <div>
-
-                      <span>
-                        {text.overallRisk}
-                      </span>
-
-                      <strong
-                        className={getRiskClass(
-                          selectedRiskLiveData
-                            ?.riskLevel
-                        )}
-                      >
-                        {selectedRiskLiveData
-                          ? translateRisk(
-                              selectedRiskLiveData.overallRisk
-                            )
-                          : "--"}
-                      </strong>
-
-                    </div>
-
-                    <div>
-
-                      <span>
-                        {text.riskScore}
-                      </span>
-
-                      <strong>
-                        {selectedRiskLiveData
-                          ? `${selectedRiskScore}/100`
-                          : "--"}
-                      </strong>
-
-                    </div>
-
-                    <div>
-
-                      <span>
-                        {text.temperature}
-                      </span>
-
-                      <strong>
-                        {selectedRiskLiveData
-                          ? `${selectedRiskLiveData.temperature}°C`
-                          : "--"}
-                      </strong>
-
-                    </div>
-
-                    <div>
-
-                      <span>
-                        {text.rainfall}
-                      </span>
-
-                      <strong>
-                        {selectedRiskLiveData
-                          ? `${selectedRiskLiveData.rainfall} mm`
-                          : "--"}
-                      </strong>
-
-                    </div>
-
-                  </div>
-
-                  <small>
-                    {text.riskNotOfficial}
-                  </small>
-
-                </div>
-              )}
-
-            </section>
-
-            {/* =================================================
                 INTERACTIVE MAP
             ================================================= */}
 
@@ -3697,20 +3435,18 @@ function App() {
                           state.id
                         ];
 
-                      const riskLevel =
-                        stateLiveData?.riskLevel;
+                      const riskLevel = String(
+                        stateLiveData?.riskLevel || ""
+                      ).toLowerCase();
 
                       const color =
-                        riskLevel ===
-                        "high"
+                        riskLevel === "high"
                           ? "#ef4444"
-                          : riskLevel ===
-                            "moderate"
+                          : riskLevel === "moderate"
                           ? "#f59e0b"
-                          : riskLevel ===
-                            "low"
-                          ? "#eab308"
-                          : "#22c55e";
+                          : riskLevel === "low"
+                          ? "#16a34a"
+                          : "#94a3b8";
 
                       const isSelected =
                         selectedState?.id ===
