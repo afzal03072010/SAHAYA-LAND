@@ -17,6 +17,178 @@
   --shadow: 0 8px 30px rgba(15, 23, 42, 0.05);
 }
 
+:root[data-theme="midnight"] {
+  --background: #071521;
+  --surface: #0d1b2a;
+  --surface-soft: #112234;
+  --border: rgba(148, 163, 184, 0.18);
+  --text-primary: #e5eefb;
+  --text-secondary: #a5c0ff;
+  --text-muted: #7f9dbd;
+  --brand: #7cc7ff;
+  --brand-light: rgba(124, 199, 255, 0.12);
+  --green: #5ee7a7;
+  --green-bg: rgba(94, 231, 167, 0.12);
+  --yellow: #f9c66d;
+  --yellow-bg: rgba(249, 198, 109, 0.12);
+  --red: #ff8e8e;
+  --red-bg: rgba(255, 142, 142, 0.12);
+  --shadow: 0 12px 35px rgba(2, 6, 23, 0.45);
+}
+
+:root[data-theme="forest"] {
+  --background: #edf7ef;
+  --surface: #f7fff8;
+  --surface-soft: #eef9ee;
+  --border: #d4ebd8;
+  --text-primary: #183127;
+  --text-secondary: #2f5e4c;
+  --text-muted: #719a7a;
+  --brand: #206c48;
+  --brand-light: #e4f6ea;
+  --green: #1d8f5f;
+  --green-bg: #ebfff5;
+  --yellow: #b98312;
+  --yellow-bg: #fff6df;
+  --red: #b95252;
+  --red-bg: #fff0f0;
+  --shadow: 0 8px 30px rgba(26, 77, 52, 0.08);
+}
+
+:root[data-theme="sunset"] {
+  --background: #fff3ec;
+  --surface: #fffaf6;
+  --surface-soft: #fff0e6;
+  --border: #f7d9c5;
+  --text-primary: #3a1f1e;
+  --text-secondary: #7d463b;
+  --text-muted: #b07d5b;
+  --brand: #d76d45;
+  --brand-light: #fde8de;
+  --green: #4f8d5a;
+  --green-bg: #edf9ef;
+  --yellow: #d7861f;
+  --yellow-bg: #fff0c8;
+  --red: #c65050;
+  --red-bg: #ffe8e8;
+  --shadow: 0 10px 32px rgba(131, 69, 41, 0.1);
+}
+
+:root[data-theme="contrast"] {
+  --background: #000000;
+  --surface: #111111;
+  --surface-soft: #1a1a1a;
+  --border: #3a3a3a;
+  --text-primary: #41628b;
+  --text-secondary: #417b9c;
+  --text-muted: #3d6589;
+  --brand: #ffe600;
+  --brand-light: rgba(255, 230, 0, 0.12);
+  --green: #42ff8f;
+  --green-bg: rgba(66, 255, 143, 0.12);
+  --yellow: #ffb000;
+  --yellow-bg: rgba(255, 176, 0, 0.12);
+  --red: #ff4d4d;
+  --red-bg: rgba(255, 77, 77, 0.12);
+  --shadow: 0 10px 32px rgba(255, 255, 255, 0.08);
+}
+
+:root[data-theme="midnight"] {
+  --background: #071521;
+  --surface: #0d1b2a;
+  --surface-soft: #112234;
+  --border: rgba(148, 163, 184, 0.18);
+  --text-primary: #e5eefb;
+  --text-secondary: #a5c0ff;
+  --text-muted: #7f9dbd;
+  --brand: #7cc7ff;
+  --brand-light: rgba(124, 199, 255, 0.12);
+  --green: #5ee7a7;
+  --green-bg: rgba(94, 231, 167, 0.12);
+  --yellow: #f9c66d;
+  --yellow-bg: rgba(249, 198, 109, 0.12);
+  --red: #ff8e8e;
+  --red-bg: rgba(255, 142, 142, 0.12);
+  --shadow: 0 12px 35px rgba(2, 6, 23, 0.45);
+}
+
+:root[data-theme="forest"] {
+  --background: #edf7ef;
+  --surface: #f7fff8;
+  --surface-soft: #eef9ee;
+  --border: #d4ebd8;
+  --text-primary: #183127;
+  --text-secondary: #2f5e4c;
+  --text-muted: #719a7a;
+  --brand: #206c48;
+  --brand-light: #e4f6ea;
+  --green: #1d8f5f;
+  --green-bg: #ebfff5;
+  --yellow: #b98312;
+  --yellow-bg: #fff6df;
+  --red: #b95252;
+  --red-bg: #fff0f0;
+  --shadow: 0 8px 30px rgba(26, 77, 52, 0.08);
+}
+
+:root[data-theme="sunset"] {
+  --background: #fff3ec;
+  --surface: #fffaf6;
+  --surface-soft: #fff0e6;
+  --border: #f7d9c5;
+  --text-primary: #3a1f1e;
+  --text-secondary: #7d463b;
+  --text-muted: #b07d5b;
+  --brand: #d76d45;
+  --brand-light: #fde8de;
+  --green: #4f8d5a;
+  --green-bg: #edf9ef;
+  --yellow: #d7861f;
+  --yellow-bg: #fff0c8;
+  --red: #c65050;
+  --red-bg: #ffe8e8;
+  --shadow: 0 10px 32px rgba(131, 69, 41, 0.1);
+}
+
+:root[data-theme="contrast"] {
+  --background: #000000;
+  --surface: #111111;
+  --surface-soft: #1a1a1a;
+  --border: #3a3a3a;
+  --text-primary: #276a9d;
+  --text-secondary: #3288a2c7;
+  --text-muted: #758737;
+  --brand: #81c626;
+  --brand-light: rgba(255, 230, 0, 0.12);
+  --green: #42ff8f;
+  --green-bg: rgba(66, 255, 143, 0.12);
+  --yellow: #ffb000;
+  --yellow-bg: rgba(255, 176, 0, 0.12);
+  --red: #ff4d4d;
+  --red-bg: rgba(255, 77, 77, 0.12);
+  --shadow: 0 10px 32px rgba(255, 255, 255, 0.08);
+}
+
+:root[data-theme="midnight"] {
+  --text-primary: #f4f8ff;
+  --text-secondary: #d5e5ff;
+  --text-muted: #b4c9df;
+}
+
+:root[data-theme="contrast"] {
+  --text-primary: #ffffff;
+  --text-secondary: #ffffff;
+  --text-muted: #e6e6e6;
+  --brand: #ffe600;
+}
+
+:root[data-theme="midnight"] .notice-bar p,
+:root[data-theme="midnight"] .live-notice p,
+:root[data-theme="contrast"] .notice-bar p,
+:root[data-theme="contrast"] .live-notice p {
+  color: var(--text-secondary);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -60,10 +232,47 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: 18px;
   padding: 0 6%;
   background: var(--surface);
   border-bottom: 1px solid var(--border);
+}
+
+.theme-selector {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.theme-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-soft);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.theme-option:hover {
+  transform: translateY(-1px);
+  border-color: var(--brand);
+}
+
+.theme-option.active {
+  background: var(--brand-light);
+  border-color: var(--brand);
+  color: var(--brand);
 }
 
 .brand {
@@ -561,6 +770,64 @@ main {
   .region-directory {
     position: static;
   }
+}
+
+:root[data-theme="midnight"] .directory-region-selector select,
+:root[data-theme="midnight"] .state-search,
+:root[data-theme="midnight"] .selected-state-card,
+:root[data-theme="midnight"] .selected-region-card,
+:root[data-theme="midnight"] .selected-state-badge,
+:root[data-theme="midnight"] .selected-risk-summary,
+:root[data-theme="midnight"] .live-data-bar button,
+:root[data-theme="midnight"] .refresh-button,
+:root[data-theme="midnight"] .secondary-button,
+:root[data-theme="midnight"] .officer-dashboard-button,
+:root[data-theme="midnight"] .show-all-states-button,
+:root[data-theme="midnight"] .alerts-toggle-button,
+:root[data-theme="midnight"] .cancel-incident-button,
+:root[data-theme="contrast"] .directory-region-selector select,
+:root[data-theme="contrast"] .state-search,
+:root[data-theme="contrast"] .selected-state-card,
+:root[data-theme="contrast"] .selected-region-card,
+:root[data-theme="contrast"] .selected-state-badge,
+:root[data-theme="contrast"] .selected-risk-summary,
+:root[data-theme="contrast"] .live-data-bar button,
+:root[data-theme="contrast"] .refresh-button,
+:root[data-theme="contrast"] .secondary-button,
+:root[data-theme="contrast"] .officer-dashboard-button,
+:root[data-theme="contrast"] .show-all-states-button,
+:root[data-theme="contrast"] .alerts-toggle-button,
+:root[data-theme="contrast"] .cancel-incident-button {
+  background: var(--surface-soft);
+  color: var(--text-primary);
+}
+
+:root[data-theme="midnight"] .selected-state-card,
+:root[data-theme="midnight"] .selected-region-card,
+:root[data-theme="contrast"] .selected-state-card,
+:root[data-theme="contrast"] .selected-region-card {
+  background: var(--surface);
+}
+
+:root[data-theme="midnight"] .selected-state-card p,
+:root[data-theme="midnight"] .selected-region-card p,
+:root[data-theme="midnight"] .live-data-bar,
+:root[data-theme="contrast"] .selected-state-card p,
+:root[data-theme="contrast"] .selected-region-card p,
+:root[data-theme="contrast"] .live-data-bar {
+  color: var(--text-secondary);
+}
+
+:root[data-theme="midnight"] .state-initial,
+:root[data-theme="contrast"] .state-initial {
+  background: var(--surface-soft);
+}
+
+:root[data-theme="contrast"] .primary-button,
+:root[data-theme="contrast"] .report-incident-button,
+:root[data-theme="contrast"] .submit-incident-button,
+:root[data-theme="contrast"] .full-analysis-button {
+  color: #000000;
 }
 
 .section-heading {
@@ -3229,4 +3496,63 @@ main {
   .risk-zone-card {
     padding: 15px;
   }
+}
+
+:root[data-theme="midnight"] .state-list-main strong,
+:root[data-theme="contrast"] .state-list-main strong {
+  color: var(--text-primary);
+}
+
+:root[data-theme="midnight"] .state-info,
+:root[data-theme="contrast"] .state-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+:root[data-theme="midnight"] .state-info strong,
+:root[data-theme="contrast"] .state-info strong {
+  overflow: hidden;
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:root[data-theme="midnight"] .state-info small,
+:root[data-theme="contrast"] .state-info small {
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+:root[data-theme="midnight"] .state-list-main small,
+:root[data-theme="contrast"] .state-list-main small,
+:root[data-theme="midnight"] .forecast-day,
+:root[data-theme="contrast"] .forecast-day,
+:root[data-theme="midnight"] .forecast-min-temperature,
+:root[data-theme="contrast"] .forecast-min-temperature,
+:root[data-theme="midnight"] .forecast-rainfall,
+:root[data-theme="contrast"] .forecast-rainfall,
+:root[data-theme="midnight"] .forecast-rainfall-label,
+:root[data-theme="contrast"] .forecast-rainfall-label {
+  color: var(--text-secondary);
+}
+
+:root[data-theme="midnight"] .forecast-card,
+:root[data-theme="contrast"] .forecast-card {
+  background: var(--surface-soft);
+  color: var(--text-primary);
+}
+
+:root[data-theme="midnight"] .forecast-card-today,
+:root[data-theme="contrast"] .forecast-card-today {
+  background: var(--brand-light);
+}
+
+:root[data-theme="midnight"] .forecast-rainfall strong,
+:root[data-theme="contrast"] .forecast-rainfall strong {
+  color: var(--text-primary);
 }

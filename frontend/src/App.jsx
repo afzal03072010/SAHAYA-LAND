@@ -1293,6 +1293,20 @@ function App() {
   const [language, setLanguage] =
     useState("English");
 
+  const themeOptions = [
+    { id: "midnight", icon: "🌙", label: "Midnight" },
+    { id: "forest", icon: "🌿", label: "Forest" },
+    { id: "sunset", icon: "🌅", label: "Sunset" },
+    { id: "contrast", icon: "◐", label: "Contrast" },
+  ];
+
+  const [theme, setTheme] = useState(() => {
+    const saved = localStorage.getItem("sahaya-theme");
+    return themeOptions.some((option) => option.id === saved)
+      ? saved
+      : "midnight";
+  });
+
   const text =
     translations[language] ||
     translations.English;
@@ -1339,6 +1353,11 @@ function App() {
       );
     }
   }, [selectedStateId]);
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("sahaya-theme", theme);
+  }, [theme]);
 
   /* =======================================================
      SAVE RISK STATE
@@ -2262,6 +2281,22 @@ function App() {
 
           </select>
 
+        </div>
+
+        <div className="theme-selector" aria-label="Theme selector">
+          {themeOptions.map((option) => (
+            <button
+              key={option.id}
+              type="button"
+              className={`theme-option ${theme === option.id ? "active" : ""}`}
+              onClick={() => setTheme(option.id)}
+              title={option.label}
+              aria-pressed={theme === option.id}
+            >
+              <span aria-hidden="true">{option.icon}</span>
+              <span>{option.label}</span>
+            </button>
+          ))}
         </div>
 
         <div className="topbar-status">
