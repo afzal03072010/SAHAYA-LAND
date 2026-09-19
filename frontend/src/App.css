@@ -36,7 +36,9 @@ body {
 }
 
 button,
-input {
+input,
+select,
+textarea {
   font: inherit;
 }
 
@@ -49,13 +51,16 @@ button {
   background: var(--background);
 }
 
-/* Header */
+/* =====================================================
+   HEADER
+===================================================== */
 
 .topbar {
-  height: 76px;
+  min-height: 76px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 20px;
   padding: 0 6%;
   background: var(--surface);
   border-bottom: 1px solid var(--border);
@@ -103,12 +108,15 @@ button {
 .live-indicator {
   width: 8px;
   height: 8px;
+  flex-shrink: 0;
   border-radius: 50%;
   background: var(--green);
   box-shadow: 0 0 0 4px var(--green-bg);
 }
 
-/* Main */
+/* =====================================================
+   MAIN
+===================================================== */
 
 main {
   width: min(1380px, 88%);
@@ -116,7 +124,9 @@ main {
   padding: 42px 0 70px;
 }
 
-/* Hero */
+/* =====================================================
+   HERO
+===================================================== */
 
 .hero-section {
   display: grid;
@@ -161,7 +171,9 @@ main {
   line-height: 1.8;
 }
 
-/* Hero visual */
+/* =====================================================
+   HERO VISUAL
+===================================================== */
 
 .hero-visual {
   position: relative;
@@ -273,7 +285,9 @@ main {
   bottom: 22px;
 }
 
-/* Notice */
+/* =====================================================
+   NOTICE
+===================================================== */
 
 .notice-bar {
   display: flex;
@@ -313,39 +327,65 @@ main {
   line-height: 1.6;
 }
 
-.notice-bar {
+.live-notice {
+  display: flex;
   align-items: flex-start;
   gap: 14px;
+  margin-bottom: 24px;
+  padding: 16px 18px;
+  border: 1px solid #dbe5f0;
   border-left: 4px solid var(--brand);
+  border-radius: 14px;
+  background: var(--brand-light);
 }
 
-.notice-bar > div:last-child {
+.live-notice-icon {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--brand);
+  color: white;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.live-notice > div:last-child {
   min-width: 0;
 }
 
-.notice-bar strong {
-  margin-bottom: 7px;
+.live-notice strong {
+  display: block;
+  margin: 1px 0 6px;
+  color: var(--brand);
   font-size: 14px;
   line-height: 1.35;
 }
 
-.notice-bar p {
+.live-notice p {
+  margin: 0;
+  color: #52657d;
+  font-size: 13px;
   line-height: 1.7;
 }
 
 @media (max-width: 520px) {
-  .notice-bar {
+  .live-notice {
     gap: 11px;
     padding: 14px;
   }
 
-  .notice-bar p {
+  .live-notice p {
     font-size: 12px;
     line-height: 1.6;
   }
 }
 
-/* Dashboard */
+/* =====================================================
+   DASHBOARD
+===================================================== */
 
 .dashboard-layout {
   display: grid;
@@ -365,12 +405,162 @@ main {
   box-shadow: var(--shadow);
 }
 
-/* Sidebar */
+/* =====================================================
+   SIDEBAR
+===================================================== */
 
 .state-sidebar {
   position: sticky;
   top: 20px;
   padding: 22px;
+}
+
+.region-directory {
+  position: sticky;
+  top: 20px;
+  min-width: 0;
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.directory-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.directory-header .eyebrow {
+  margin-bottom: 8px;
+}
+
+.directory-header h2 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 22px;
+  letter-spacing: -0.7px;
+}
+
+.directory-count {
+  display: grid;
+  place-items: center;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 8px;
+  border-radius: 50%;
+  background: var(--brand-light);
+  color: var(--brand);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.directory-region-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 22px;
+  padding: 14px;
+  border: 1px solid #dbe5f0;
+  border-radius: 12px;
+  background: var(--surface-soft);
+}
+
+.directory-region-selector label {
+  color: var(--text-secondary);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.directory-region-selector select {
+  width: 100%;
+  min-height: 42px;
+  padding: 9px 11px;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+  background: white;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 700;
+  outline: none;
+}
+
+.directory-region-selector select:focus {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px rgba(23, 59, 104, 0.12);
+}
+
+.state-search {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  height: 44px;
+  margin: 16px 0;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: white;
+}
+
+.state-search:focus-within {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px rgba(23, 59, 104, 0.1);
+}
+
+.state-search span {
+  color: var(--brand);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.state-search input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 13px;
+}
+
+.state-search input::placeholder {
+  color: var(--text-muted);
+}
+
+.region-directory .show-all-states-button {
+  width: 100%;
+  margin-bottom: 14px;
+}
+
+.region-directory .state-list {
+  max-height: 560px;
+  gap: 8px;
+}
+
+.region-directory .state-list-item {
+  min-height: 52px;
+  padding: 10px;
+  line-height: 1.4;
+}
+
+.region-directory .state-list-item.selected {
+  border-color: #a8d0c8;
+  background: var(--brand-light);
+}
+
+.region-directory .state-list-item.selected .state-initial {
+  background: var(--brand);
+  color: white;
+}
+
+@media (max-width: 800px) {
+  .region-directory {
+    position: static;
+  }
 }
 
 .section-heading {
@@ -390,11 +580,16 @@ main {
   letter-spacing: -0.7px;
 }
 
+.section-heading h3 {
+  margin: 0;
+}
+
 .state-count {
   display: grid;
   place-items: center;
   width: 30px;
   height: 30px;
+  flex-shrink: 0;
   border-radius: 8px;
   background: var(--brand-light);
   color: var(--brand);
@@ -432,6 +627,9 @@ main {
   display: flex;
   flex-direction: column;
   gap: 5px;
+  max-height: 560px;
+  overflow-y: auto;
+  padding-right: 4px;
 }
 
 .state-list-item {
@@ -503,11 +701,22 @@ main {
   font-size: 11px;
 }
 
-.mini-risk-dot {
-  width: 8px;
-  height: 8px;
-  flex-shrink: 0;
-  border-radius: 50%;
+.state-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.state-list::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background: #edf1f5;
+}
+
+.state-list::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: #cbd5e1;
+}
+
+.state-list::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
 .empty-state {
@@ -517,7 +726,117 @@ main {
   text-align: center;
 }
 
-/* Main dashboard */
+.state-list-region-label {
+  margin: 16px 0 8px;
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+/* =====================================================
+   INDIA → REGION → STATE SELECTOR
+===================================================== */
+
+.directory-breadcrumb {
+  margin: 8px 0 0;
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.directory-breadcrumb span {
+  color: var(--brand);
+}
+
+.india-region-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 20px 0 16px;
+  padding: 14px;
+  border: 1px solid #dbe5f0;
+  border-radius: 12px;
+  background: var(--surface-soft);
+}
+
+.india-region-selector label {
+  color: var(--brand);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.india-region-selector select {
+  width: 100%;
+  min-height: 40px;
+  padding: 9px 11px;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+  outline: none;
+  background: var(--surface);
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.india-region-selector select:hover {
+  border-color: #9db5d1;
+}
+
+.india-region-selector select:focus {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px rgba(23, 59, 104, 0.12);
+}
+
+.india-region-selector select:disabled {
+  cursor: not-allowed;
+  opacity: 0.8;
+  background: #eef2f7;
+}
+
+.region-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
+  color: var(--text-secondary);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.region-indicator strong {
+  color: var(--brand);
+  font-weight: 800;
+}
+
+.region-indicator::before {
+  content: "🇮🇳";
+  font-size: 14px;
+}
+
+.region-empty-state {
+  padding: 18px 10px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 10px;
+  background: var(--surface-soft);
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+/* =====================================================
+   MAIN DASHBOARD
+===================================================== */
 
 .main-dashboard {
   min-width: 0;
@@ -606,7 +925,9 @@ main {
   font-size: 17px;
 }
 
-/* Live toolbar */
+/* =====================================================
+   LIVE TOOLBAR
+===================================================== */
 
 .live-toolbar {
   display: flex;
@@ -628,6 +949,159 @@ main {
   align-items: center;
   gap: 9px;
   color: var(--text-primary);
+}
+
+.selected-region-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 28px;
+  padding: 28px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: linear-gradient(135deg, #ffffff, #f5f9fd);
+  box-shadow: var(--shadow);
+}
+
+.selected-region-main {
+  min-width: 0;
+}
+
+.selected-region-main h1 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: clamp(30px, 4vw, 46px);
+  line-height: 1.1;
+}
+
+.selected-region-main .eyebrow {
+  margin-bottom: 10px;
+}
+
+.selected-location {
+  margin: 12px 0 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.selected-description {
+  max-width: 680px;
+  margin: 18px 0 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.selected-region-main .primary-button {
+  margin-top: 24px;
+}
+
+.selected-risk-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 132px;
+  min-height: 112px;
+  gap: 9px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: white;
+  text-align: center;
+}
+
+.selected-risk-summary span {
+  color: var(--text-secondary);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.selected-risk-summary strong {
+  font-size: 20px;
+  line-height: 1.25;
+}
+
+.selected-risk-summary small {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.live-data-bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 18px;
+  margin: 18px 0;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.live-data-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  color: var(--text-primary);
+}
+
+.live-data-status strong {
+  line-height: 1.5;
+}
+
+.live-data-bar > span:not(.live-data-status) {
+  white-space: nowrap;
+  line-height: 1.5;
+}
+
+.live-data-bar button {
+  min-height: 40px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 9px 13px;
+  background: white;
+  color: var(--brand);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.live-data-bar button:hover {
+  border-color: var(--brand);
+  background: var(--brand-light);
+}
+
+@media (max-width: 700px) {
+  .selected-region-card {
+    flex-direction: column;
+    gap: 22px;
+    padding: 22px;
+  }
+
+  .selected-risk-summary {
+    width: 100%;
+    min-height: 0;
+    flex-direction: row;
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  .live-data-bar {
+    grid-template-columns: 1fr;
+    gap: 11px;
+  }
+
+  .live-data-bar > span:not(.live-data-status),
+  .live-data-bar button {
+    width: 100%;
+  }
 }
 
 .refresh-button {
@@ -740,7 +1214,9 @@ main {
   font-size: 13px;
 }
 
-/* Metrics */
+/* =====================================================
+   METRICS
+===================================================== */
 
 .metric-grid {
   display: grid;
@@ -851,7 +1327,9 @@ main {
   border-radius: 50%;
 }
 
-/* Risk colors */
+/* =====================================================
+   RISK COLORS
+===================================================== */
 
 .risk-low {
   color: var(--green) !important;
@@ -883,7 +1361,208 @@ main {
   background: #ef4444;
 }
 
-/* Map */
+/* =====================================================
+   CURRENT WEATHER
+===================================================== */
+
+.current-weather-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 20px;
+  padding: 24px;
+  border: 1px solid #dce3ec;
+  border-radius: 18px;
+  background: #f8fafc;
+}
+
+.current-weather-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 70px;
+  height: 70px;
+  flex-shrink: 0;
+  border-radius: 18px;
+  background: #e8f2ff;
+  font-size: 42px;
+}
+
+.current-weather-card h3 {
+  margin: 6px 0;
+  font-size: 24px;
+  color: #102a43;
+}
+
+.current-weather-card p {
+  margin: 0;
+  color: #627d98;
+}
+
+.rain-probability {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #e1e8f0;
+  color: #627d98;
+  font-size: 13px;
+}
+
+.rain-probability strong {
+  color: #102a43;
+}
+
+.weather-current-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(260px, 0.85fr);
+  align-items: center;
+  gap: 28px;
+  margin-top: 20px;
+  padding: 24px 26px;
+  border: 1px solid #dce3ec;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #ffffff, #f3f8fb);
+  box-shadow: var(--shadow);
+}
+
+.weather-current-main {
+  min-width: 0;
+}
+
+.weather-current-main .eyebrow {
+  margin-bottom: 12px;
+}
+
+.weather-current-value {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.weather-icon {
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  flex-shrink: 0;
+  border-radius: 18px;
+  background: #e8f2ff;
+  font-size: 38px;
+}
+
+.weather-current-value strong {
+  display: block;
+  color: #102a43;
+  font-size: clamp(30px, 4vw, 42px);
+  line-height: 1;
+}
+
+.weather-current-value p {
+  margin: 8px 0 0;
+  color: #627d98;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.weather-current-details {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.weather-current-details div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding: 13px 12px;
+  border: 1px solid #dce8ed;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.weather-current-details span {
+  color: #627d98;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.weather-current-details strong {
+  color: #102a43;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+@media (max-width: 800px) {
+  .weather-current-card {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 520px) {
+  .weather-current-card {
+    padding: 20px;
+  }
+
+  .weather-current-details {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =====================================================
+   LOCATION SELECTOR
+===================================================== */
+
+.location-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.location-selector label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #224a83;
+}
+
+.location-selector select {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid #dbe3ee;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #172033;
+  font-size: 14px;
+  outline: none;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.location-selector select:focus {
+  border-color: #173b68;
+  box-shadow: 0 0 0 3px rgba(23, 59, 104, 0.12);
+}
+
+.location-selector select:disabled {
+  background: #f1f5f9;
+  color: #173b68;
+  font-weight: 700;
+  cursor: not-allowed;
+}
+
+/* =====================================================
+   MAP
+===================================================== */
 
 .map-section {
   margin-top: 24px;
@@ -928,6 +1607,14 @@ main {
   height: 100%;
 }
 
+.india-map {
+  width: 100%;
+  height: 520px;
+  min-height: 420px;
+  overflow: hidden;
+  border-radius: 18px;
+}
+
 .map-popup {
   display: flex;
   flex-direction: column;
@@ -946,7 +1633,9 @@ main {
   font-size: 11px;
 }
 
-/* Analysis */
+/* =====================================================
+   ANALYSIS
+===================================================== */
 
 .analysis-section {
   margin-top: 24px;
@@ -1045,179 +1734,9 @@ main {
   line-height: 1.5;
 }
 
-/* Footer */
-
-.footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 15px;
-  padding: 25px 6%;
-  border-top: 1px solid var(--border);
-  background: white;
-  color: var(--text-muted);
-  font-size: 12px;
-}
-
-.footer p {
-  margin: 0;
-}
-
-.footer span {
-  color: var(--text-secondary);
-}
-
-/* Responsive */
-
-@media (max-width: 1100px) {
-  main {
-    width: min(94%, 900px);
-  }
-
-  .hero-section {
-    grid-template-columns: 1fr;
-    gap: 30px;
-  }
-
-  .hero-content {
-    max-width: 850px;
-  }
-
-  .hero-visual {
-    max-width: 650px;
-    width: 100%;
-  }
-
-  .metric-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 800px) {
-  .topbar {
-    padding: 0 4%;
-  }
-
-  .topbar-status {
-    display: none;
-  }
-
-  main {
-    width: 92%;
-    padding-top: 25px;
-  }
-
-  .dashboard-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .state-sidebar {
-    position: static;
-  }
-
-  .state-list {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .selected-state-card {
-    flex-direction: column;
-    padding: 23px;
-  }
-
-  .selected-state-badge {
-    width: 100%;
-    text-align: left;
-  }
-
-  .selected-state-badge span {
-    display: inline-block;
-    margin: 0 8px 0 0;
-  }
-
-  .analysis-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .footer {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 25px 4%;
-  }
-}
-
-@media (max-width: 520px) {
-  .hero-content h2 {
-    font-size: 39px;
-    letter-spacing: -1.8px;
-  }
-
-  .hero-content p {
-    font-size: 14px;
-  }
-
-  .hero-visual {
-    min-height: 230px;
-  }
-
-  .visual-center strong {
-    font-size: 52px;
-  }
-
-  .floating-stat {
-    padding: 9px 10px;
-  }
-
-  .floating-stat strong {
-    font-size: 10px;
-  }
-
-  .stat-one {
-    top: 14px;
-    left: 14px;
-  }
-
-  .stat-two {
-    right: 14px;
-    bottom: 14px;
-  }
-
-  .state-list {
-    grid-template-columns: 1fr;
-  }
-
-  .metric-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .map-section,
-  .analysis-section {
-    padding: 18px;
-  }
-
-  .map-heading {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .map-wrapper {
-    height: 350px;
-  }
-
-  .analysis-details {
-    grid-template-columns: 1fr;
-  }
-
-  .live-toolbar {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .refresh-button {
-    width: 100%;
-  }
-}
-/* Emergency alerts */
+/* =====================================================
+   EMERGENCY ALERTS
+===================================================== */
 
 .alerts-section {
   margin-top: 24px;
@@ -1406,24 +1925,6 @@ main {
   text-align: center;
 }
 
-@media (max-width: 520px) {
-  .alerts-section {
-    padding: 18px;
-  }
-
-  .alerts-heading {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .alerts-toggle-button {
-    width: 100%;
-  }
-
-  .alert-card {
-    padding: 13px;
-  }
-}
 /* =====================================================
    7-DAY WEATHER FORECAST
 ===================================================== */
@@ -1584,8 +2085,6 @@ main {
   text-align: center;
 }
 
-/* Forecast scrollbar */
-
 .forecast-grid::-webkit-scrollbar {
   height: 6px;
 }
@@ -1604,56 +2103,6 @@ main {
   background: #94a3b8;
 }
 
-/* Forecast responsive design */
-
-@media (max-width: 1100px) {
-  .forecast-grid {
-    grid-template-columns: repeat(7, 120px);
-  }
-}
-
-@media (max-width: 800px) {
-  .forecast-section {
-    padding: 20px;
-  }
-
-  .forecast-grid {
-    grid-template-columns: repeat(7, 115px);
-  }
-}
-
-@media (max-width: 520px) {
-  .forecast-section {
-    padding: 18px;
-  }
-
-  .forecast-section .section-heading {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .forecast-grid {
-    grid-template-columns: repeat(7, 112px);
-    gap: 10px;
-  }
-
-  .forecast-card {
-    min-width: 112px;
-    padding: 15px 10px;
-  }
-
-  .forecast-icon {
-    font-size: 27px;
-  }
-
-  .forecast-temperature {
-    font-size: 23px;
-  }
-
-  .forecast-description {
-    font-size: 10px;
-  }
-}
 /* =====================================================
    WEATHER CHARTS
 ===================================================== */
@@ -1722,30 +2171,10 @@ main {
   height: 300px;
 }
 
-@media (max-width: 900px) {
-  .charts-grid {
-    grid-template-columns: 1fr;
-  }
-}
+/* =====================================================
+   WELCOME
+===================================================== */
 
-@media (max-width: 520px) {
-  .charts-section {
-    padding: 18px;
-  }
-
-  .chart-card {
-    padding: 14px;
-  }
-
-  .chart-card-header {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .chart-wrapper {
-    height: 260px;
-  }
-}
 .welcome-card {
   min-height: 520px;
   display: flex;
@@ -1790,9 +2219,274 @@ main {
   color: var(--brand);
   font-weight: 600;
 }
-/* ================================
+
+/* =====================================================
+   RISK ZONE
+===================================================== */
+
+.risk-zone-section {
+  margin-top: 30px;
+  padding: 28px;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.risk-zone-section .section-heading {
+  margin-bottom: 24px;
+}
+
+.risk-zone-section .section-heading p {
+  max-width: 650px;
+  margin: 8px 0 0;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.section-kicker {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.risk-zone-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 260px;
+}
+
+.risk-zone-controls label {
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.risk-zone-controls select,
+.state-selector {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.risk-zone-controls select:focus,
+.state-selector:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px var(--brand-light);
+}
+
+/* Selected Risk */
+
+.selected-risk-zone {
+  margin-bottom: 24px;
+  padding: 24px;
+  border: 1px solid #cbd5e1;
+  border-radius: 18px;
+  background: var(--surface-soft);
+}
+
+.selected-risk-zone-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.selected-risk-zone-header h3 {
+  margin: 6px 0;
+  color: var(--text-primary);
+  font-size: 25px;
+}
+
+.selected-risk-zone-header p {
+  max-width: 700px;
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.selected-risk-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.selected-risk-metrics div {
+  padding: 15px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.selected-risk-metrics span {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.selected-risk-metrics strong {
+  color: var(--text-primary);
+  font-size: 22px;
+}
+
+/* Risk cards */
+
+.risk-zone-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.risk-zone-card {
+  width: 100%;
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.risk-zone-card:hover {
+  transform: translateY(-3px);
+  border-color: #9db5d1;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.risk-zone-card.selected {
+  border: 2px solid var(--brand);
+  background: var(--brand-light);
+}
+
+.risk-zone-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.risk-zone-card h3 {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.35;
+}
+
+.risk-zone-card-top span:not(.risk-badge) {
+  display: block;
+  margin-top: 5px;
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.risk-zone-card p {
+  min-height: 48px;
+  margin: 16px 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.risk-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 72px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.risk-badge.low {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.risk-badge.moderate {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.risk-badge.high {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.risk-zone-score-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.risk-zone-score-row strong {
+  color: var(--text-primary);
+  font-size: 13px;
+}
+
+.risk-progress {
+  width: 100%;
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e2e8f0;
+}
+
+.risk-progress.large {
+  height: 12px;
+  margin-top: 22px;
+}
+
+.risk-progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  transition: width 0.4s ease;
+}
+
+.risk-progress-fill.low {
+  background: #16a34a;
+}
+
+.risk-progress-fill.moderate {
+  background: #d97706;
+}
+
+.risk-progress-fill.high {
+  background: #dc2626;
+}
+
+/* =====================================================
    CITIZEN INCIDENT REPORTING
-================================ */
+===================================================== */
 
 .incident-action-bar {
   display: flex;
@@ -1823,7 +2517,6 @@ main {
   background: #172033;
   color: white;
   font-weight: 700;
-  cursor: pointer;
   white-space: nowrap;
 }
 
@@ -1831,7 +2524,9 @@ main {
   opacity: 0.9;
 }
 
-/* Modal */
+/* =====================================================
+   INCIDENT MODAL
+===================================================== */
 
 .incident-modal-overlay {
   position: fixed;
@@ -1878,7 +2573,6 @@ main {
   border-radius: 50%;
   background: #f1f5f9;
   font-size: 26px;
-  cursor: pointer;
 }
 
 .incident-form-grid {
@@ -1940,7 +2634,6 @@ main {
   border-radius: 10px;
   padding: 12px 20px;
   font-weight: 700;
-  cursor: pointer;
 }
 
 .cancel-incident-button {
@@ -1953,7 +2646,9 @@ main {
   color: white;
 }
 
-/* Reports */
+/* =====================================================
+   INCIDENT REPORTS
+===================================================== */
 
 .incident-reports-section {
   margin-bottom: 28px;
@@ -2032,29 +2727,10 @@ main {
   border-radius: 12px;
 }
 
-@media (max-width: 700px) {
-  .incident-action-bar {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+/* =====================================================
+   OFFICER DASHBOARD
+===================================================== */
 
-  .incident-form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .incident-full-width {
-    grid-column: auto;
-  }
-
-  .incident-report-card {
-    flex-direction: column;
-  }
-
-  .incident-report-image {
-    width: 100%;
-    height: 180px;
-  }
-}
 .officer-dashboard-section {
   margin: 24px 0;
   padding: 24px;
@@ -2079,7 +2755,6 @@ main {
   background: white;
   color: #0f766e;
   font-weight: 700;
-  cursor: pointer;
 }
 
 .officer-dashboard-button:hover {
@@ -2163,25 +2838,10 @@ main {
   resize: vertical;
 }
 
-@media (max-width: 700px) {
-  .officer-report-header {
-    flex-direction: column;
-  }
+/* =====================================================
+   LANGUAGE SELECTOR
+===================================================== */
 
-  .officer-report-actions {
-    grid-template-columns: 1fr;
-  }
-
-  .incident-action-bar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .officer-dashboard-button,
-  .report-incident-button {
-    width: 100%;
-  }
-}
 .language-selector {
   display: flex;
   align-items: center;
@@ -2210,6 +2870,162 @@ main {
   border-color: #2563eb;
 }
 
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 25px 6%;
+  border-top: 1px solid var(--border);
+  background: white;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.footer p {
+  margin: 0;
+}
+
+.footer span {
+  color: var(--text-secondary);
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 1100px) {
+  main {
+    width: min(94%, 900px);
+  }
+
+  .hero-section {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .hero-content {
+    max-width: 850px;
+  }
+
+  .hero-visual {
+    max-width: 650px;
+    width: 100%;
+  }
+
+  .metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .forecast-grid {
+    grid-template-columns: repeat(7, 120px);
+  }
+
+  .risk-zone-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .selected-risk-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 800px) {
+  .topbar {
+    padding: 0 4%;
+  }
+
+  .topbar-status {
+    display: none;
+  }
+
+  main {
+    width: 92%;
+    padding-top: 25px;
+  }
+
+  .dashboard-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .state-sidebar {
+    position: static;
+  }
+
+  .state-list {
+    max-height: 420px;
+  }
+
+  .selected-state-card {
+    flex-direction: column;
+    padding: 23px;
+  }
+
+  .selected-state-badge {
+    width: 100%;
+    text-align: left;
+  }
+
+  .selected-state-badge span {
+    display: inline-block;
+    margin: 0 8px 0 0;
+  }
+
+  .analysis-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .forecast-section {
+    padding: 20px;
+  }
+
+  .forecast-grid {
+    grid-template-columns: repeat(7, 115px);
+  }
+
+  .india-map {
+    height: 420px;
+    min-height: 360px;
+  }
+
+  .risk-zone-section {
+    padding: 20px;
+  }
+
+  .risk-zone-section .section-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .risk-zone-controls {
+    min-width: 100%;
+  }
+
+  .selected-risk-zone-header {
+    flex-direction: column;
+  }
+
+  .risk-zone-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 25px 4%;
+  }
+}
+
 @media (max-width: 700px) {
   .topbar {
     flex-wrap: wrap;
@@ -2224,136 +3040,193 @@ main {
   .language-selector select {
     flex: 1;
   }
-}
-.current-weather-card {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  margin-top: 20px;
-  padding: 24px;
-  border: 1px solid #dce3ec;
-  border-radius: 18px;
-  background: #f8fafc;
-}
 
-.current-weather-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 70px;
-  height: 70px;
-  border-radius: 18px;
-  background: #e8f2ff;
-  font-size: 42px;
-}
+  .incident-action-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
 
-.current-weather-card h3 {
-  margin: 6px 0;
-  font-size: 24px;
-  color: #102a43;
-}
-
-.current-weather-card p {
-  margin: 0;
-  color: #627d98;
-}
-
-.rain-probability {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 12px;
-  padding-top: 10px;
-  border-top: 1px solid #e1e8f0;
-  color: #627d98;
-  font-size: 13px;
-}
-
-.rain-probability strong {
-  color: #102a43;
-}
-
-.current-weather-card {
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(260px, 0.85fr);
-  align-items: center;
-  gap: 28px;
-  padding: 24px 26px;
-  border-color: #dce3ec;
-  border-radius: 18px;
-  background: linear-gradient(135deg, #ffffff, #f3f8fb);
-  box-shadow: var(--shadow);
-}
-
-.current-weather-card .eyebrow {
-  margin-bottom: 12px;
-}
-
-.current-weather-card > div:first-child {
-  min-width: 0;
-}
-
-.current-weather-card > div:first-child > div {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.current-weather-card .current-weather-icon {
-  width: 68px;
-  height: 68px;
-  border-radius: 18px;
-  background: #e8f2ff;
-  font-size: 38px;
-}
-
-.current-weather-card h3 {
-  margin: 0;
-  font-size: clamp(30px, 4vw, 42px);
-  line-height: 1;
-}
-
-.current-weather-card p {
-  margin-top: 8px;
-  line-height: 1.4;
-}
-
-.current-weather-details {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-
-.current-weather-details span {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 13px 12px;
-  border: 1px solid #dce8ed;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.78);
-  color: #627d98;
-  font-size: 10px;
-  font-weight: 800;
-  line-height: 1.3;
-  text-transform: uppercase;
-}
-
-.current-weather-details strong {
-  color: #102a43;
-  font-size: 16px;
-  line-height: 1.2;
-}
-
-@media (max-width: 800px) {
-  .current-weather-card {
+  .incident-form-grid {
     grid-template-columns: 1fr;
-    gap: 20px;
+  }
+
+  .incident-full-width {
+    grid-column: auto;
+  }
+
+  .incident-report-card {
+    flex-direction: column;
+  }
+
+  .incident-report-image {
+    width: 100%;
+    height: 180px;
+  }
+
+  .officer-report-header {
+    flex-direction: column;
+  }
+
+  .officer-report-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .officer-dashboard-button,
+  .report-incident-button {
+    width: 100%;
   }
 }
 
 @media (max-width: 520px) {
-  .current-weather-details {
+  .hero-content h2 {
+    font-size: 39px;
+    letter-spacing: -1.8px;
+  }
+
+  .hero-content p {
+    font-size: 14px;
+  }
+
+  .hero-visual {
+    min-height: 230px;
+  }
+
+  .visual-center strong {
+    font-size: 52px;
+  }
+
+  .floating-stat {
+    padding: 9px 10px;
+  }
+
+  .floating-stat strong {
+    font-size: 10px;
+  }
+
+  .stat-one {
+    top: 14px;
+    left: 14px;
+  }
+
+  .stat-two {
+    right: 14px;
+    bottom: 14px;
+  }
+
+  .state-list {
     grid-template-columns: 1fr;
+  }
+
+  .metric-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .map-section,
+  .analysis-section {
+    padding: 18px;
+  }
+
+  .map-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .map-wrapper {
+    height: 350px;
+  }
+
+  .analysis-details {
+    grid-template-columns: 1fr;
+  }
+
+  .live-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .refresh-button {
+    width: 100%;
+  }
+
+  .alerts-section {
+    padding: 18px;
+  }
+
+  .alerts-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .alerts-toggle-button {
+    width: 100%;
+  }
+
+  .alert-card {
+    padding: 13px;
+  }
+
+  .forecast-section {
+    padding: 18px;
+  }
+
+  .forecast-section .section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .forecast-grid {
+    grid-template-columns: repeat(7, 112px);
+    gap: 10px;
+  }
+
+  .forecast-card {
+    min-width: 112px;
+    padding: 15px 10px;
+  }
+
+  .forecast-icon {
+    font-size: 27px;
+  }
+
+  .forecast-temperature {
+    font-size: 23px;
+  }
+
+  .forecast-description {
+    font-size: 10px;
+  }
+
+  .charts-section {
+    padding: 18px;
+  }
+
+  .chart-card {
+    padding: 14px;
+  }
+
+  .chart-card-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .chart-wrapper {
+    height: 260px;
+  }
+
+  .selected-risk-metrics {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .selected-risk-metrics div {
+    padding: 12px;
+  }
+
+  .selected-risk-metrics strong {
+    font-size: 18px;
+  }
+
+  .risk-zone-card {
+    padding: 15px;
   }
 }
