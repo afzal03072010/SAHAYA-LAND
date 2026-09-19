@@ -1111,156 +1111,159 @@ function App() {
      LIVE WEATHER DATA
   ===================================================== */
 
-  const fetchLiveData = async () => {
-    try {
-      setIsRefreshing(true);
-      setError("");
+ const fetchLiveData = async () => {
+  try {
+    setIsRefreshing(true);
+    setError("");
 
-      const results = await Promise.all(
-        states.map(async (state) => {
-          const url =
-            "https://api.open-meteo.com/v1/forecast?" +
-            `latitude=${state.latitude}` +
-            `&longitude=${state.longitude}` +
-            "&current=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m,weather_code" +
-            "&hourly=soil_moisture_0_to_1cm,precipitation_probability" +
-            "&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weather_code" +
-            "&forecast_days=7" +
-            "&timezone=auto";
+    const API_BASE_URL =
+  "https://sahaya-land-backend.onrender.com";
 
-          const response =
-            await fetch(url);
+    const response = await fetch(
+      `${API_BASE_URL}/api/risk-zones`
+    );
 
-          if (!response.ok) {
-            throw new Error(
-              `Failed to fetch data for ${state.name}`
-            );
-          }
-
-          const data =
-            await response.json();
-
-          const currentRainfall =
-            data.current?.precipitation ?? 0;
-
-          const currentTemperature =
-            data.current?.temperature_2m ?? 0;
-
-          const currentHumidity =
-            data.current
-              ?.relative_humidity_2m ?? 0;
-
-          const currentWindSpeed =
-            data.current
-              ?.wind_speed_10m ?? 0;
-
-          const currentWeatherCode =
-            data.current?.weather_code ?? 0;
-
-          const soilMoisture =
-            data.hourly
-              ?.soil_moisture_0_to_1cm?.[0] ??
-            0;
-
-          const rainProbability =
-            data.hourly
-              ?.precipitation_probability?.[0] ??
-            0;
-
-          const risk = calculateRisk(
-            currentRainfall,
-            soilMoisture
-          );
-
-          const forecast =
-            data.daily?.time?.map(
-              (date, index) => ({
-                date,
-
-                maxTemperature:
-                  data.daily
-                    ?.temperature_2m_max?.[
-                    index
-                  ] ?? 0,
-
-                minTemperature:
-                  data.daily
-                    ?.temperature_2m_min?.[
-                    index
-                  ] ?? 0,
-
-                rainfall:
-                  data.daily
-                    ?.precipitation_sum?.[
-                    index
-                  ] ?? 0,
-
-                weatherCode:
-                  data.daily
-                    ?.weather_code?.[
-                    index
-                  ] ?? 0,
-              })
-            ) ?? [];
-
-          return {
-            id: state.id,
-
-            temperature:
-              currentTemperature,
-
-            rainfall:
-              currentRainfall,
-
-            humidity:
-              currentHumidity,
-
-            windSpeed:
-              currentWindSpeed,
-
-            weatherCode:
-              currentWeatherCode,
-
-            soilMoisture,
-
-            rainProbability,
-
-            overallRisk:
-              risk.label,
-
-            riskLevel:
-              risk.level,
-
-            forecast,
-          };
-        })
+    if (!response.ok) {
+      throw new Error(
+        `Backend request failed: ${response.status}`
       );
-
-      const formattedData = {};
-
-      results.forEach((result) => {
-        formattedData[result.id] =
-          result;
-      });
-
-      setLiveData(
-        formattedData
-      );
-
-      setLastUpdated(
-        new Date()
-      );
-    } catch (fetchError) {
-      console.error(fetchError);
-
-      setError(
-        "Live data could not be loaded. Please check your internet connection and try again."
-      );
-    } finally {
-      setIsLoading(false);
-      setIsRefreshing(false);
     }
-  };
+
+    const data = await response.json();
+
+    if (!data.success || !Array.isArray(data.zones)) {
+      throw new Error(
+        "Invalid response received from SAHAYA-LAND backend."
+      );
+    }
+
+    const formattedData = {};
+
+    data.zones.forEach((zone) => {
+      /*
+       * Backend zones use state names.
+       * Match them with the 36 states/UTs
+       * already defined in this App.jsx.
+       */
+      const matchingState = states.find(
+        (state) =>
+          state.name.toLowerCase() ===
+          String(zone.name || zone.state || "")
+            .toLowerCase()
+      );
+
+      const stateId =
+        matchingState?.id ||
+        zone.id ||
+        zone.cell_id;
+
+      if (!stateId) return;
+
+      formattedData[stateId] = {
+        ...zone,
+
+        id: stateId,
+
+        name:
+          matchingState?.name ||
+          zone.name ||
+          zone.state ||
+          "Unknown",
+
+        latitude:
+          zone.latitude ??
+          zone.lat ??
+          matchingState?.latitude ??
+          0,
+
+        longitude:
+          zone.longitude ??
+          zone.lon ??
+          matchingState?.longitude ??
+          0,
+
+        rainfall:
+          zone.rainfall ??
+          zone.rainfall_mm ??
+          0,
+
+        rainfall_mm:
+          zone.rainfall_mm ??
+          zone.rainfall ??
+          0,
+
+        temperature:
+          zone.temperature ??
+          zone.temperature_c ??
+          0,
+
+        humidity:
+          zone.humidity ??
+          zone.relative_humidity ??
+          0,
+
+        soilMoisture:
+          zone.soil_moisture ??
+          zone.soilMoisture ??
+          0,
+
+        soil_moisture:
+          zone.soil_moisture ??
+          zone.soilMoisture ??
+          0,
+
+        windSpeed:
+          zone.wind_speed ??
+          zone.windSpeed ??
+          0,
+
+        riskScore:
+          zone.risk_score ??
+          zone.riskScore ??
+          0,
+
+        riskLevel:
+          zone.risk_level ??
+          zone.riskLevel ??
+          "Moderate",
+
+        reason:
+          zone.reason ||
+          "Risk assessment based on available environmental data.",
+
+        weatherSource:
+          zone.weather_source ||
+          "Open-Meteo",
+
+        liveWeather:
+          zone.live_weather ??
+          data.live_weather ??
+          false
+      };
+    });
+
+    setLiveData(formattedData);
+
+    setLastUpdated(new Date());
+
+    console.log(
+      "SAHAYA-LAND backend data loaded:",
+      data
+    );
+  } catch (fetchError) {
+    console.error(
+      "SAHAYA-LAND backend error:",
+      fetchError
+    );
+
+    setError(
+      "Live risk data could not be loaded from the SAHAYA-LAND backend. Please make sure the backend is running."
+    );
+  } finally {
+    setIsLoading(false);
+    setIsRefreshing(false);
+  }
+};
 
   useEffect(() => {
     fetchLiveData();
