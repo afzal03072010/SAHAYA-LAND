@@ -3000,52 +3000,62 @@ function App() {
                       index
                     ) => (
                       <div
-                        className="forecast-card"
+                        className={`forecast-card ${
+                          index === 0
+                            ? "forecast-card-today"
+                            : ""
+                        }`}
                         key={`${day.date}-${index}`}
                       >
+                        <div className="forecast-day-row">
+                          <span className="forecast-day">
+                            {index ===
+                            0
+                              ? text.today
+                              : new Date(
+                                  day.date
+                                ).toLocaleDateString(
+                                  "en-IN",
+                                  {
+                                    weekday:
+                                      "short",
+                                  }
+                                )}
+                          </span>
 
-                        <span>
-                          {index ===
-                          0
-                            ? text.today
-                            : new Date(
-                                day.date
-                              ).toLocaleDateString(
-                                "en-IN",
-                                {
-                                  weekday:
-                                    "short",
-                                }
-                              )}
-                        </span>
+                          <span className="forecast-icon">
+                            {getWeatherIcon(
+                              day.weatherCode
+                            )}
+                          </span>
+                        </div>
 
-                        <strong>
-                          {getWeatherIcon(
-                            day.weatherCode
-                          )}
-                        </strong>
+                        <div className="forecast-temp-row">
+                          <strong className="forecast-temperature">
+                            {Math.round(
+                              day.maxTemperature
+                            )}
+                            °
+                          </strong>
 
-                        <b>
-                          {Math.round(
-                            day.maxTemperature
-                          )}
-                          °
-                        </b>
+                          <small className="forecast-min-temperature">
+                            {Math.round(
+                              day.minTemperature
+                            )}
+                            °
+                          </small>
+                        </div>
 
-                        <small>
-                          {Math.round(
-                            day.minTemperature
-                          )}
-                          °
-                        </small>
-
-                        <em>
-                          {day.rainfall.toFixed(
-                            1
-                          )}{" "}
-                          mm
-                        </em>
-
+                        <div className="forecast-rainfall">
+                          <span className="forecast-rainfall-label">
+                            Rain
+                          </span>
+                          <strong>
+                            {day.rainfall.toFixed(
+                              1
+                            )} mm
+                          </strong>
+                        </div>
                       </div>
                     )
                   )}
